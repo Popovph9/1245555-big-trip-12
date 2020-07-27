@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Филипп Попов](https://up.htmlacademy.ru/ecmascript/12/user/1245555).
-* Наставник: `Неизвестно`.
+* Наставник: [Ruslan Malogulko](https://htmlacademy.ru/profile/id9728).
 
 ---
 
