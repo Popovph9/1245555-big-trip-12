@@ -267,6 +267,3 @@ render(dateContainer, createDateTemplate(), 'beforeend');
 for (let i = 0; i < TRIPS_COUNT; i++) {
   render(tripContainer, createTripTemplate(), 'beforeend');
 };
-
-
-
