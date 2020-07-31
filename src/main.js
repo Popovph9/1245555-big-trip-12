@@ -45,7 +45,7 @@ const createRouteFiltersTemplate = () => {
 };
 
 const createTripsFiltersTemplate = () => {
-  return(`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+  return (`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
   <span class="trip-sort__item  trip-sort__item--day">Day</span>
 
   <div class="trip-sort__item  trip-sort__item--event">
@@ -239,31 +239,30 @@ const createTripTemplate = () => {
 </li>`);
 };
 
-
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const routeContainer = document.querySelector('.trip-main');
-const routeFiltersContainer = routeContainer.querySelector('.trip-main__trip-controls');
-const routeMenuContaier = routeFiltersContainer.querySelector('h2');
-const tripsContainer = document.querySelector('.trip-events');
-const tripsFiltersContainer = tripsContainer.querySelector('h2');
+const routeContainer = document.querySelector(`.trip-main`);
+const routeFiltersContainer = routeContainer.querySelector(`.trip-main__trip-controls`);
+const routeMenuContaier = routeFiltersContainer.querySelector(`h2`);
+const tripsContainer = document.querySelector(`.trip-events`);
+const tripsFiltersContainer = tripsContainer.querySelector(`h2`);
 
-render(routeContainer, createRouteTemplate(), 'afterbegin');
-render(routeMenuContaier, createRouteMenuTemplate(), 'afterend');
-render(routeFiltersContainer, createRouteFiltersTemplate(), 'beforeend');
-render(tripsFiltersContainer, createTripsFiltersTemplate(), 'afterend');
+render(routeContainer, createRouteTemplate(), `afterbegin`);
+render(routeMenuContaier, createRouteMenuTemplate(), `afterend`);
+render(routeFiltersContainer, createRouteFiltersTemplate(), `beforeend`);
+render(tripsFiltersContainer, createTripsFiltersTemplate(), `afterend`);
 
-render(tripsContainer, addTripTemplate(), 'beforeend');
+render(tripsContainer, addTripTemplate(), `beforeend`);
 
-render(tripsContainer, createOneDayTemplate(), 'beforeend');
-const mainContentContainer = document.querySelector('.trip-days');
-const dateContainer = mainContentContainer.querySelector('.day__info');
-const tripContainer = mainContentContainer.querySelector('.trip-events__list');
+render(tripsContainer, createOneDayTemplate(), `beforeend`);
+const mainContentContainer = document.querySelector(`.trip-days`);
+const dateContainer = mainContentContainer.querySelector(`.day__info`);
+const tripContainer = mainContentContainer.querySelector(`.trip-events__list`);
 
-render(dateContainer, createDateTemplate(), 'beforeend');
+render(dateContainer, createDateTemplate(), `beforeend`);
 
 for (let i = 0; i < TRIPS_COUNT; i++) {
-  render(tripContainer, createTripTemplate(), 'beforeend');
-};
+  render(tripContainer, createTripTemplate(), `beforeend`);
+}
