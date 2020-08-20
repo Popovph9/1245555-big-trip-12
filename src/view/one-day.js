@@ -1,7 +1,8 @@
-export const createOneDayTemplate = () => {
+export const getCreateOneDayTemplate = () => {
   return (`<ul class="trip-days">
   <li class="trip-days__item  day">
-    <div class="day__info"></div>
+    <div class="day__info">
+    </div>
 
     <ul class="trip-events__list"></ul>
   </li>
