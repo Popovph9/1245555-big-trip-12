@@ -19,6 +19,7 @@ export const getRandomArray = function (array) {
 
 export const getRandomArrayOfCurrentLength = function (array, number) {
   let anotherArray = [];
+  let slicedArray = [];
 
   array.forEach(function (item) {
     if (getRandomInteger(0, 1) === 1) {
@@ -26,7 +27,7 @@ export const getRandomArrayOfCurrentLength = function (array, number) {
     }
   });
 
-  let slicedArray = anotherArray.slice(0, number);
+  slicedArray = anotherArray.slice(0, number);
 
   return slicedArray;
 };
@@ -35,3 +36,33 @@ export const getRandomIndex = (arr) => {
   return getRandomInteger(0, arr.length - 1);
 };
 
+export const renderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+  AFTER: `after`
+};
+
+export const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case renderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case renderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    case renderPosition.AFTER:
+      container.after(element);
+      break;
+  }
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};

@@ -43,7 +43,6 @@ const generateDestination = () => {
 };
 
 const generateOffers = () => {
-
   return getRandomArray(OFFERS);
 };
 
@@ -63,9 +62,7 @@ const generateTime = () => {
 };
 
 const getDate = () => {
-  let currenDate = new Date();
-
-  return currenDate;
+  return new Date();
 };
 
 const date = getDate();
@@ -88,4 +85,3 @@ export const generateTrip = () => {
     date: humanizeDate(date)
   };
 };
-
