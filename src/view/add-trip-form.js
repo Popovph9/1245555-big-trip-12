@@ -95,7 +95,7 @@ const getCreatePhotoTemplate = (arr) => {
   return arr.photo.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
 };
 
-const editTripTemplate = (trips) => {
+const getEditTripTemplate = (trips) => {
 
   const {type, destination, offers, info, timeIn, timeOut, price} = trips;
 
@@ -206,7 +206,7 @@ export default class TripEditForm {
   }
 
   getTemplate() {
-    return editTripTemplate(this._trips);
+    return getEditTripTemplate(this._trips);
   }
 
   getElement() {
