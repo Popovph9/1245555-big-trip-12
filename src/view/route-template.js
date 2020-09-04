@@ -1,4 +1,5 @@
-import {createElement} from "../util.js";
+import AbstractClass from "./abstract-class.js";
+import {humanizeDate} from "../utils/common.js";
 
 const RENDERED_DESTINATIONS = 3;
 
@@ -21,7 +22,7 @@ const getCreateTripDurationTemplate = (arr) => {
   const last = arr[arr.length - 1];
   shortArr.push(first);
   shortArr.push(last);
-  return shortArr.map((it) => `${it.date}`).join(` — `);
+  return shortArr.map((it) => `${humanizeDate(it.date)}`).join(` — `);
 };
 
 const getPrice = (arr) => {
@@ -49,25 +50,14 @@ const getRouteTemplate = (trips) => {
   );
 };
 
-export default class Route {
+export default class Route extends AbstractClass {
   constructor(trips) {
+    super();
+
     this._trips = trips;
-    this._element = null;
   }
 
   getTemplate() {
     return getRouteTemplate(this._trips);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

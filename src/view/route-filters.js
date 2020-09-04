@@ -1,4 +1,4 @@
-import {createElement} from "../util.js";
+import AbstractClass from "./abstract-class.js";
 
 const getRouteFiltersTemplate = () => {
   return (
@@ -27,24 +27,8 @@ const getRouteFiltersTemplate = () => {
   );
 };
 
-export default class RouteFilters {
-  constructor() {
-    this._element = null;
-  }
-
+export default class RouteFilters extends AbstractClass {
   getTemplate() {
     return getRouteFiltersTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

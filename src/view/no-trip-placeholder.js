@@ -1,4 +1,4 @@
-import {createElement} from "../util.js";
+import AbstractClass from "./abstract-class.js";
 
 const getTripPlaceholderTemplate = () => {
   return (
@@ -8,24 +8,8 @@ const getTripPlaceholderTemplate = () => {
   );
 };
 
-export default class NoTripPlaceholder {
-  constructor() {
-    this._element = null;
-  }
-
+export default class NoTripPlaceholder extends AbstractClass {
   getTemplate() {
     return getTripPlaceholderTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

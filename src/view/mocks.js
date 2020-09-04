@@ -1,7 +1,4 @@
-import {getRandomIndex} from "../util.js";
-import {getRandomArray} from "../util.js";
-import {getRandomInteger} from "../util.js";
-import {getRandomArrayOfCurrentLength} from "../util.js";
+import {getRandomIndex, getRandomArray, getRandomInteger, getRandomArrayOfCurrentLength} from "../utils/common.js";
 
 const TRIP_TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 const DESTINATION = [`Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`];
@@ -61,18 +58,20 @@ const generateTime = () => {
   return time;
 };
 
-const getDate = () => {
-  return new Date();
-};
+const generateDate = () => {
+  const maxDaysGap = 7;
+  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
 
-const date = getDate();
+  const currentDate = new Date();
+  currentDate.setHours(23, 59, 59, 999);
+  currentDate.setDate(currentDate.getDate() + daysGap);
 
-const humanizeDate = (longDate) => {
-  return longDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`});
+  return new Date(currentDate);
 };
 
 export const generateTrip = () => {
   const price = getRandomInteger(PRICES.min, PRICES.max);
+  const date = generateDate();
 
   return {
     type: generateType(),
@@ -82,6 +81,6 @@ export const generateTrip = () => {
     price,
     offers: generateOffers(),
     info: generateInfo(),
-    date: humanizeDate(date)
+    date
   };
 };
