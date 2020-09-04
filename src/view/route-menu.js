@@ -1,4 +1,4 @@
-import {createElement} from "../util.js";
+import AbstractClass from "./abstract-class.js";
 
 const getRouteMenuTemplate = () => {
   return (
@@ -9,24 +9,8 @@ const getRouteMenuTemplate = () => {
   );
 };
 
-export default class RouteMenu {
-  constructor() {
-    this._element = null;
-  }
-
+export default class RouteMenu extends AbstractClass {
   getTemplate() {
     return getRouteMenuTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

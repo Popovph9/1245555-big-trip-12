@@ -1,6 +1,6 @@
 import {PREPOSITION} from "../const.js";
 import {ACTIVITY} from "../const.js";
-import {createElement} from "../util.js";
+import AbstractClass from "./abstract-class.js";
 
 const MAX_RENDERED_OFFERS = 3;
 
@@ -66,25 +66,25 @@ const getTripTemplate = (trips) => {
   );
 };
 
-export default class Trip {
+export default class Trip extends AbstractClass {
   constructor(trips) {
+    super();
+
     this._trips = trips;
-    this._element = null;
+    this._customClickHandler = this._customClickHandler.bind(this);
+  }
+
+  _customClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
+  }
+
+  setCustomClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._customClickHandler);
   }
 
   getTemplate() {
     return getTripTemplate(this._trips);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

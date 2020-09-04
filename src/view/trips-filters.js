@@ -1,4 +1,4 @@
-import {createElement} from "../util.js";
+import AbstractClass from "./abstract-class.js";
 
 const getTripsFiltersTemplate = () => {
   return (
@@ -40,24 +40,8 @@ const getTripsFiltersTemplate = () => {
   );
 };
 
-export default class TripsFilters {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TripsFilters extends AbstractClass {
   getTemplate() {
     return getTripsFiltersTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

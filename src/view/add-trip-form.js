@@ -2,7 +2,7 @@ import {TRANSFER_TYPES} from "../const.js";
 import {ACTIVITY_TYPES} from "../const.js";
 import {PREPOSITION} from "../const.js";
 import {ACTIVITY} from "../const.js";
-import {createElement} from "../util.js";
+import AbstractClass from "./abstract-class.js";
 
 const OFFERS_NAME = {
   addLuggage: `Add luggage`,
@@ -96,7 +96,6 @@ const getCreatePhotoTemplate = (arr) => {
 };
 
 const getEditTripTemplate = (trips) => {
-
   const {type, destination, offers, info, timeIn, timeOut, price} = trips;
 
   const getSubb = () => {
@@ -199,25 +198,36 @@ const getEditTripTemplate = (trips) => {
   );
 };
 
-export default class TripEditForm {
+export default class TripEditForm extends AbstractClass {
   constructor(trips = BLANC_TRIP) {
+    super();
+
     this._trips = trips;
-    this._element = null;
+    this._customSaveButtonClickHandler = this._customSaveButtonClickHandler.bind(this);
+    this._customCloseButtonClickHandler = this._customCloseButtonClickHandler.bind(this);
+  }
+
+  _customSaveButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editSave();
+  }
+
+  _customCloseButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClose();
+  }
+
+  setCustomSaveButtonClickHandler(callback) {
+    this._callback.editSave = callback;
+    this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, this._customSaveButtonClickHandler);
+  }
+
+  setCustomCloseButtonClickHandler(callback) {
+    this._callback.editClose = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._customCloseButtonClickHandler);
   }
 
   getTemplate() {
     return getEditTripTemplate(this._trips);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

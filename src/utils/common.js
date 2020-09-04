@@ -36,33 +36,42 @@ export const getRandomIndex = (arr) => {
   return getRandomInteger(0, arr.length - 1);
 };
 
-export const renderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
-  AFTER: `after`
+export const humanizeDate = (longDate) => {
+  return longDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`});
 };
 
-export const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
-export const render = (container, element, place) => {
-  switch (place) {
-    case renderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case renderPosition.BEFOREEND:
-      container.append(element);
-      break;
-    case renderPosition.AFTER:
-      container.after(element);
-      break;
+const getWeightForNullDate = (dateA, dateB) => {
+  if (dateA === null && dateB === null) {
+    return 0;
   }
+
+  if (dateA === null) {
+    return 1;
+  }
+
+  if (dateB === null) {
+    return -1;
+  }
+
+  return null;
 };
 
-export const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
+export const sortTripsUp = (tripA, tripB) => {
+  const weight = getWeightForNullDate(tripA.date, tripB.date);
 
-  return newElement.firstChild;
+  if (weight !== null) {
+    return weight;
+  }
+
+  return tripA.date.getTime() - tripB.date.getTime();
+};
+
+export const sortTripsDown = (tripA, tripB) => {
+  const weight = getWeightForNullDate(tripA.date, tripB.date);
+
+  if (weight !== null) {
+    return weight;
+  }
+
+  return tripB.date.getTime() - tripA.date.getTime();
 };
