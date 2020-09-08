@@ -14,7 +14,7 @@ const getPeriodTemplate = (arr) => {
 };
 
 const getDateTemplate = (trips) => {
-  const getUniqueDates = Array.from(new Set(trips.map((it) => it.date.getDate())));
+  const getUniqueDates = Array.from(new Set(trips.map((it) => it.date)));
   getUniqueDates.sort(((a, b) => a - b));
   const periodTemplate = getPeriodTemplate(getUniqueDates);
   return (
