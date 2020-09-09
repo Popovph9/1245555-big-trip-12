@@ -39,39 +39,3 @@ export const getRandomIndex = (arr) => {
 export const humanizeDate = (longDate) => {
   return longDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`});
 };
-
-const getWeightForNullDate = (dateA, dateB) => {
-  if (dateA === null && dateB === null) {
-    return 0;
-  }
-
-  if (dateA === null) {
-    return 1;
-  }
-
-  if (dateB === null) {
-    return -1;
-  }
-
-  return null;
-};
-
-export const sortTripsUp = (tripA, tripB) => {
-  const weight = getWeightForNullDate(tripA.date, tripB.date);
-
-  if (weight !== null) {
-    return weight;
-  }
-
-  return tripA.date.getTime() - tripB.date.getTime();
-};
-
-export const sortTripsDown = (tripA, tripB) => {
-  const weight = getWeightForNullDate(tripA.date, tripB.date);
-
-  if (weight !== null) {
-    return weight;
-  }
-
-  return tripB.date.getTime() - tripA.date.getTime();
-};

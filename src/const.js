@@ -9,3 +9,8 @@ export const ACTIVITY = {
   sight: `Sightseeing`,
   rest: `Restaurant`
 };
+export const SORT_TYPES = {
+  event: `event`,
+  time: `time`,
+  price: `price`
+};
