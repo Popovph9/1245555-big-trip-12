@@ -2,7 +2,7 @@ import {TRANSFER_TYPES} from "../const.js";
 import {ACTIVITY_TYPES} from "../const.js";
 import {PREPOSITION} from "../const.js";
 import {ACTIVITY} from "../const.js";
-import AbstractClass from "./abstract-class.js";
+import SmartClass from "./smart-class.js";
 
 const OFFERS_NAME = {
   addLuggage: `Add luggage`,
@@ -62,15 +62,15 @@ const getCreateChooseDestinationTemplate = (destination) => {
 
 const getClassName = (offer) => {
   let name = CLASS_NAME.luggage;
-  if (offer.name === OFFERS_NAME.addLuggage) {
+  if (offer.title === OFFERS_NAME.addLuggage) {
     name = CLASS_NAME.luggage;
-  } else if (offer.name === OFFERS_NAME.travelByTrain) {
+  } else if (offer.title === OFFERS_NAME.travelByTrain) {
     name = CLASS_NAME.train;
-  } else if (offer.name === OFFERS_NAME.switchToComfort) {
+  } else if (offer.title === OFFERS_NAME.switchToComfort) {
     name = CLASS_NAME.comfort;
-  } else if (offer.name === OFFERS_NAME.chooseSeats) {
+  } else if (offer.title === OFFERS_NAME.chooseSeats) {
     name = CLASS_NAME.seats;
-  } else if (offer.name === OFFERS_NAME.addMeal) {
+  } else if (offer.title === OFFERS_NAME.addMeal) {
     name = CLASS_NAME.meal;
   }
   return name;
@@ -84,7 +84,7 @@ const getCreateChooseOffersTemplate = (arr) => {
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${getClassName(offer)}-1" type="checkbox" name="event-offer-${getClassName(offer)}">
 
       <label class="event__offer-label" for="event-offer-${getClassName(offer)}-1">
-        <span class="event__offer-title">${offer.name}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+        <span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
       </label>
 
     </div>
@@ -92,11 +92,11 @@ const getCreateChooseOffersTemplate = (arr) => {
 };
 
 const getCreatePhotoTemplate = (arr) => {
-  return arr.photo.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
+  return arr.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join(``);
 };
 
 const getEditTripTemplate = (trips) => {
-  const {type, destination, offers, info, timeIn, timeOut, price} = trips;
+  const {type, destination, offers, timeIn, timeOut, basePrice, isFavorite, isOffers, isDescription, isPhoto} = trips;
 
   const getSubb = () => {
     let subb = PREPOSITION.to;
@@ -110,10 +110,9 @@ const getEditTripTemplate = (trips) => {
 
   const transferTypeTemplate = getCreateChooseTransferTypeTemplate(type);
   const activityTypeTemplate = getCreateChooseActivityTypeTemplate(type);
-  const destinationTemplate = getCreateChooseDestinationTemplate(destination);
+  const destinationTemplate = getCreateChooseDestinationTemplate(destination.name);
   const offersTemplate = getCreateChooseOffersTemplate(offers);
-  const photoTemplate = getCreatePhotoTemplate(info);
-
+  const photoTemplate = getCreatePhotoTemplate(destination.pictures);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -144,9 +143,9 @@ const getEditTripTemplate = (trips) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type} ${getSubb()}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name || ``}" list="destination-list-1">
           <datalist id="destination-list-1">
-            ${destinationTemplate}
+            ${destinationTemplate || ``}
           </datalist>
         </div>
 
@@ -167,49 +166,79 @@ const getEditTripTemplate = (trips) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+
         <button class="event__reset-btn" type="reset">Cancel</button>
+
+        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+        <label class="event__favorite-btn" for="event-favorite-1">
+          <span class="visually-hidden">Add to favorite</span>
+          <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+            <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+          </svg>
+        </label>
+
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
       </header>
 
+      ${destination.name ? `
       <section class="event__details">
+        ${isOffers ? `
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
 
           ${offersTemplate}
-        </section>
+        </section>` : ``}
 
+        ${isDescription || isPhoto ? `
         <section class="event__section  event__section--destination">
+          ${isDescription ? `
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${info.description}</p>
+          <p class="event__destination-description">${destination.description}</p>` : ``}
 
+          ${isPhoto ? `
           <div class="event__photos-container">
             <div class="event__photos-tape">
               ${photoTemplate}
             </div>
-          </div>
-        </section>
-      </section>
+          </div>` : ``}
+
+        </section>` : ``}
+
+      </section>` : ``}
     </form>`
   );
 };
 
-export default class TripEditForm extends AbstractClass {
+export default class TripEditForm extends SmartClass {
   constructor(trips = BLANC_TRIP) {
     super();
 
     this._trips = trips;
+    this._data = TripEditForm.parseTripToData(trips);
     this._customSaveButtonClickHandler = this._customSaveButtonClickHandler.bind(this);
     this._customCloseButtonClickHandler = this._customCloseButtonClickHandler.bind(this);
+    this._favoriteButtonClickHandler = this._favoriteButtonClickHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(trip) {
+    this.updateData(TripEditForm.parseTripToData(trip));
   }
 
   _customSaveButtonClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editSave();
+    this._callback.editSave(TripEditForm.parseDataToTrip(this._data));
   }
 
   _customCloseButtonClickHandler(evt) {
@@ -217,17 +246,76 @@ export default class TripEditForm extends AbstractClass {
     this._callback.editClose();
   }
 
+  _favoriteButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  _typeChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({type: evt.currentTarget.value});
+  }
+
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({name: this._destinationField.value}, true);
+  }
+
   setCustomSaveButtonClickHandler(callback) {
     this._callback.editSave = callback;
-    this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, this._customSaveButtonClickHandler);
+    this.getElement().addEventListener(`submit`, this._customSaveButtonClickHandler);
   }
 
   setCustomCloseButtonClickHandler(callback) {
     this._callback.editClose = callback;
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._customCloseButtonClickHandler);
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._customCloseButtonClickHandler);
+  }
+
+  setFavoriteButtonClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteButtonClickHandler);
+  }
+
+  _setInnerHandlers() {
+    this._typeFields = this.getElement().querySelectorAll(`.event__type-input`);
+    this._typeFields.forEach((field) => field.addEventListener(`change`, this._typeChangeHandler));
+
+    this._destinationField = this.getElement().querySelector(`#event-destination-1`);
+    this._destinationField.addEventListener(`change`, this._destinationChangeHandler);
   }
 
   getTemplate() {
-    return getEditTripTemplate(this._trips);
+    return getEditTripTemplate(this._data);
+  }
+
+  static parseTripToData(trip) {
+    return Object.assign({}, trip,
+        {
+          isOffers: trip.offers.length !== 0,
+          isDescription: trip.destination.description.length !== 0,
+          isPhoto: trip.destination.pictures.length !== 0,
+        });
+  }
+
+  static parseDataToTrip(data) {
+    data = Object.assign({}, data);
+
+    if (data.name) {
+      data.description.name = data.name;
+      delete data.name;
+    }
+
+    delete data.isOffers;
+    delete data.isDescription;
+    delete data.isPhoto;
+
+    return data;
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setCustomCloseButtonClickHandler(this._callback.editClose);
+    this.setCustomSaveButtonClickHandler(this._callback.editSave);
   }
 }

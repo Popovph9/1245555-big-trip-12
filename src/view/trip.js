@@ -8,7 +8,7 @@ const getgetCreateOfferItemTemplate = (offers) => {
   return `
     ${offers.map((offer) => `
       <li class="event__offer">
-        <span class="event__offer-title">${offer.name}</span>
+        <span class="event__offer-title">${offer.title}</span>
           &plus;
           &euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -18,7 +18,7 @@ const getgetCreateOfferItemTemplate = (offers) => {
 };
 
 const getTripTemplate = (trips) => {
-  const {type, destination, timeIn, timeOut, price, offers} = trips;
+  const {type, destination, timeIn, timeOut, basePrice, offers} = trips;
 
   const offerItemTemplate = getgetCreateOfferItemTemplate(offers);
 
@@ -38,7 +38,7 @@ const getTripTemplate = (trips) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${getSubb()} ${destination}</h3>
+        <h3 class="event__title">${type} ${getSubb()} ${destination.name}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
@@ -50,7 +50,7 @@ const getTripTemplate = (trips) => {
         </div>
 
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${price}</span>
+          &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
 
         <h4 class="visually-hidden">Offers:</h4>

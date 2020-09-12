@@ -1,175 +1,106 @@
-import TripsFilters from "../view/trips-filters.js";
-import Date from "../view/date.js";
+import {render, renderPosition, replace, remove} from "../utils/render.js";
 import TripEditForm from "../view/add-trip-form.js";
 import Trip from "../view/trip.js";
-import NoTripPlaceholder from "../view/no-trip-placeholder.js";
-import {render, renderPosition, replace} from "../utils/render.js";
-import {humanizeDate} from "../utils/common.js";
 
-import SortModeMainContainer from "../view/SortModeMainContainer.js";
-import BlankListElement from "../view/blankList.js";
-import BlanckDateBlock from "../view/blanckDate.js";
-import SortModeTripsListContainer from "../view/sortModeTripsListContainer.js";
-import {SORT_TYPES} from "../const.js";
-import {sortTripsByPrice, sortTripsByTime} from "../utils/filters.js";
+const mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
 
-export default class TripsListPresenter {
-  constructor(tripsContainer, tripsFiltersContainer, trips) {
-    this._trips = trips.slice();
-    this._sourcedTrips = trips.slice();
+export default class TripPesenter {
+  constructor(tripContainer, changeMode, changeData) {
+    this._tripContainer = tripContainer;
+    this._changeMode = changeMode;
+    this._changeData = changeData;
 
-    this._tripsContainer = tripsContainer;
-    this._tripsFiltersContainer = tripsFiltersContainer;
-    this._filtersComponent = new TripsFilters();
-    this._mainContentComponent = new Date(this._trips);
-    this._placeholderComponent = new NoTripPlaceholder();
-    this._currentSortType = SORT_TYPES.event;
-    this._sortContainerComponent = new SortModeMainContainer();
-    this._sortModeTripsContainer = new SortModeTripsListContainer();
-    this._sortModeBlanckListComponent = new BlankListElement();
-    this._blanckDateBlockConponent = new BlanckDateBlock();
+    this._tripComponent = null;
+    this._tripEditComponent = null;
+    this._mode = mode.DEFAULT;
 
-    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._escKeydownHandler = this._escKeydownHandler.bind(this);
+    this._handleEditClick = this._handleEditClick.bind(this);
+    this._handleSulbmitClick = this._handleSulbmitClick.bind(this);
+    this._handleResetClick = this._handleResetClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
-  init() {
-    if (this._trips.length === 0) {
-      this._renderPlaceholder();
-      return;
-    } else {
-      this._renderFilters();
-      this._renderTripsList();
-    }
-  }
+  init(trip) {
+    this._trip = trip;
 
-  _handleSortTypeChange(sortType) {
-    if (this._currentSortType === sortType) {
-      this._clearTripsList();
-      this._renderTripsList();
+    const prevTripComponent = this._tripComponent;
+    const prevTripEditComponent = this._tripEditComponent;
+
+    this._tripComponent = new Trip(trip);
+    this._tripEditComponent = new TripEditForm(trip);
+
+    this._tripComponent.setCustomClickHandler(this._handleEditClick);
+    this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);
+    this._tripEditComponent.setCustomCloseButtonClickHandler(this._handleResetClick);
+    this._tripEditComponent.setFavoriteButtonClickHandler(this._handleFavoriteClick);
+
+    if (prevTripComponent === null || prevTripEditComponent === null) {
+      render(this._tripContainer, this._tripComponent, renderPosition.BEFOREEND);
       return;
     }
-    // - Сортируем задачи
-    this._sortTrips(sortType);
-    // - Очищаем список
-    this._clearTripsList();
-    // - Рендерим список заново
-    this._renderSortContainerComponent();
-    this._renderSortModeBlankList();
-    this._renderBlanckDateComponent();
-    this._renderSortModeTripsContainer();
+    if (this._mode === mode.DEFAULT) {
+      replace(this._tripComponent, prevTripComponent);
+    }
+    if (this._mode === mode.EDITING) {
+      replace(this._tripEditComponent, prevTripEditComponent);
+    }
 
-    this._trips.forEach((trip) => {
-      this._renderCard(this._sortModeTripsContainer, trip);
-    });
+    remove(prevTripComponent);
+    remove(prevTripEditComponent);
   }
 
-  _renderSortContainerComponent() {
-    render(this._tripsContainer, this._sortContainerComponent, renderPosition.BEFOREEND);
+  _replaceCardToForm() {
+    replace(this._tripEditComponent, this._tripComponent);
+    document.addEventListener(`keydown`, this._escKeydownHandler);
+    this._changeMode();
+    this._mode = mode.EDITING;
   }
 
-  _renderSortModeBlankList() {
-    render(this._sortContainerComponent, this._sortModeBlanckListComponent, renderPosition.BEFOREEND);
+  _replaceFormToCard() {
+    replace(this._tripComponent, this._tripEditComponent);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    this._mode = mode.DEFAULT;
   }
 
-  _renderBlanckDateComponent() {
-    render(this._sortModeBlanckListComponent, this._blanckDateBlockConponent, renderPosition.AFTERBEGIN);
+  _handleEditClick() {
+    this._replaceCardToForm();
   }
 
-  _renderSortModeTripsContainer() {
-    render(this._sortModeBlanckListComponent, this._sortModeTripsContainer, renderPosition.BEFOREEND);
+  _handleSulbmitClick(trip) {
+    this._changeData(trip);
+    this._replaceFormToCard();
   }
 
-  _sortTrips(sortType) {
-    switch (sortType) {
-      case SORT_TYPES.price:
-        this._trips.sort(sortTripsByPrice);
-        break;
-      case SORT_TYPES.time:
-        this._trips.sort(sortTripsByTime);
-        break;
-      case SORT_TYPES.event:
-        this._trips = this._sourcedTrips.slice();
-        break;
+  _handleResetClick() {
+    this._tripEditComponent.reset(this._trip);
+    this._replaceFormToCard();
+  }
+
+  _handleFavoriteClick() {
+    this._changeData(Object.assign({}, this._trip, {isFavorite: !this._trip.isFavorite}));
+  }
+
+  _escKeydownHandler(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      this._tripEditComponent.reset(this._trip);
+      this._replaceFormToCard();
     }
   }
 
-  _renderFilters() {
-    render(this._tripsFiltersContainer, this._filtersComponent, renderPosition.AFTER);
-    this._filtersComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+  destroy() {
+    remove(this._tripComponent);
+    remove(this._tripEditComponent);
   }
 
-  _clearTripsList() {
-    this._mainContentComponent.getElement().remove();
-    this._mainContentComponent.getElement().innerHTML = ``;
-    this._mainContentComponent.removeElement();
-
-    this._sortModeTripsContainer.getElement().innerHTML = ``;
-    this._sortContainerComponent.getElement().remove();
-    this._sortContainerComponent.removeElement();
-  }
-
-  _renderMainContentComponent() {
-    render(this._tripsContainer, this._mainContentComponent, renderPosition.BEFOREEND);
-  }
-
-  _renderCard(tripListElement, trips) {
-    const tripComponent = new Trip(trips);
-    const tripEditComponent = new TripEditForm(trips);
-
-    const replaceTripToForm = () => {
-      replace(tripEditComponent, tripComponent);
-    };
-
-    const replaceFormToCard = () => {
-      replace(tripComponent, tripEditComponent);
-    };
-
-    tripComponent.setCustomClickHandler(() => {
-      replaceTripToForm();
-      document.addEventListener(`keydown`, escKeyDownHandler);
-    });
-
-    tripEditComponent.setCustomSaveButtonClickHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener(`keydown`, escKeyDownHandler);
-    });
-
-    tripEditComponent.setCustomCloseButtonClickHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener(`keydown`, escKeyDownHandler);
-    });
-
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener(`keydown`, escKeyDownHandler);
-      }
-    };
-
-    render(tripListElement, tripComponent, renderPosition.BEFOREEND);
-  }
-
-  _renderCards() {
-    const dateFields = this._mainContentComponent.getElement().querySelectorAll(`.day__date`);
-
-    const tripsContainers = this._mainContentComponent.getElement().querySelectorAll(`.trip-events__list`);
-    const containersArray = Array.from(tripsContainers);
-
-    for (let i = 0; i < containersArray.length; i++) {
-      const currentDateValue = dateFields[i].innerHTML;
-      this._trips.filter((it) => humanizeDate(it.date).includes(currentDateValue)).forEach((trip) => {
-        this._renderCard(containersArray[i], trip);
-      });
+  resetView() {
+    if (this._mode !== mode.DEFAULT) {
+      this._tripEditComponent.reset(this._trip);
+      this._replaceFormToCard();
     }
-  }
-
-  _renderTripsList() {
-    this._renderMainContentComponent();
-    this._renderCards();
-  }
-
-  _renderPlaceholder() {
-    render(this._tripsContainer, this._placeholderComponent, renderPosition.BEFOREEND);
   }
 }

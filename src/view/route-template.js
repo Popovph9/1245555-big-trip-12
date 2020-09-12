@@ -1,18 +1,20 @@
 import AbstractClass from "./abstract-class.js";
 import {humanizeDate} from "../utils/common.js";
+import {sortTripsByDate} from "../utils/filters.js";
 
 const RENDERED_DESTINATIONS = 3;
 
 const getCreateDestinationTempalte = (arr) => {
+  arr.sort(sortTripsByDate);
   if (arr.length <= RENDERED_DESTINATIONS) {
-    return arr.map((it) => `${it.destination}`).join(` — `);
+    return arr.map((it) => `${it.destination.name}`).join(` — `);
   } else {
     const shortArr = [];
     const first = arr[0];
     const last = arr[arr.length - 1];
     shortArr.push(first);
     shortArr.push(last);
-    return shortArr.map((it) => `${it.destination}`).join(` —...— `);
+    return shortArr.map((it) => `${it.destination.name}`).join(` —...— `);
   }
 };
 
@@ -26,7 +28,7 @@ const getCreateTripDurationTemplate = (arr) => {
 };
 
 const getPrice = (arr) => {
-  return arr.reduce((acc, it) => acc + it.price, 0);
+  return arr.reduce((acc, it) => acc + it.basePrice, 0);
 };
 
 const getRouteTemplate = (trips) => {
