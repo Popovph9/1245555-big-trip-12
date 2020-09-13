@@ -17,7 +17,7 @@ const getgetCreateOfferItemTemplate = (offers) => {
   `;
 };
 
-const getTripTemplate = ({type, destination, timeIn, timeOut, basePrice, offers}) => {
+const getTripTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers}) => {
   const offerItemTemplate = getgetCreateOfferItemTemplate(offers);
 
   const getSubb = () => {
@@ -40,9 +40,9 @@ const getTripTemplate = ({type, destination, timeIn, timeOut, basePrice, offers}
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${timeIn}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${dateFrom}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${timeOut}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${dateTo}</time>
           </p>
           <p class="event__duration">30M</p>
         </div>

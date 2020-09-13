@@ -32,21 +32,30 @@ const getPrice = (arr) => {
 };
 
 const getRouteTemplate = (trips) => {
-  const destinationTempalte = getCreateDestinationTempalte(trips);
-  const tripDurationTemplate = getCreateTripDurationTemplate(trips);
-  const price = getPrice(trips);
+  if (trips.length > 0) {
+    const destinationTempalte = getCreateDestinationTempalte(trips);
+    const tripDurationTemplate = getCreateTripDurationTemplate(trips);
+    const price = getPrice(trips);
 
+    return (
+      `<section class="trip-main__trip-info  trip-info">
+        <div class="trip-info__main">
+          <h1 class="trip-info__title">${destinationTempalte}</h1>
+
+
+          <p class="trip-info__dates">${tripDurationTemplate}</p>
+        </div>
+
+        <p class="trip-info__cost">
+          Total: &euro;&nbsp;<span class="trip-info__cost-value">${price}</span>
+        </p>
+      </section>`
+    );
+  }
   return (
     `<section class="trip-main__trip-info  trip-info">
-      <div class="trip-info__main">
-        <h1 class="trip-info__title">${destinationTempalte}</h1>
-
-
-        <p class="trip-info__dates">${tripDurationTemplate}</p>
-      </div>
-
       <p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">${price}</span>
+        Total: &euro;&nbsp;<span class="trip-info__cost-value">0</span>
       </p>
     </section>`
   );

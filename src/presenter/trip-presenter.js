@@ -62,7 +62,7 @@ export default class TripPesenter {
 
   _replaceFormToCard() {
     replace(this._tripComponent, this._tripEditComponent);
-    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    document.removeEventListener(`keydown`, this._escKeydownHandler);
     this._mode = mode.DEFAULT;
   }
 

@@ -22,8 +22,8 @@ const CLASS_NAME = {
 const BLANC_TRIP = {
   type: TRANSFER_TYPES[0],
   destination: [``],
-  timeIn: ``,
-  timeOut: ``,
+  dateFrom: ``,
+  dateTo: ``,
   price: 0,
   offers: [{name: ``, price: 0}],
   info: {
@@ -95,7 +95,7 @@ const getCreatePhotoTemplate = (arr) => {
   return arr.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join(``);
 };
 
-const getEditTripTemplate = ({type, destination, offers, timeIn, timeOut, basePrice, isFavorite, isOffers, isDescription, isPhoto}) => {
+const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, basePrice, isFavorite, isOffers, isDescription, isPhoto}) => {
   const getSubb = () => {
     let subb = PREPOSITION.to;
 
@@ -151,12 +151,12 @@ const getEditTripTemplate = ({type, destination, offers, timeIn, timeOut, basePr
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${timeIn}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${timeOut}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -258,7 +258,7 @@ export default class TripEditForm extends SmartClass {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    this.updateData({name: this._destinationField.value}, true);
+    this.updateData({name: this._destinationField.value});
     this.updateElement();
   }
 
