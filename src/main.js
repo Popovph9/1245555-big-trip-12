@@ -3,7 +3,7 @@ import {generateTrip} from "./view/mocks.js";
 import Route from "./view/route-template.js";
 import RouteMenu from "./view/route-menu.js";
 import RouteFilters from "./view/route-filters.js";
-import TripsListPresenter from "./presenter/trip-presenter.js";
+import TripsListPresenter from "./presenter/trips-list-presenter.js";
 
 const TRIPS_COUNT = 5;
 
@@ -19,5 +19,5 @@ render(routeMenuContaier, new RouteMenu(), renderPosition.AFTER);
 render(routeContainer, new Route(trips), renderPosition.AFTERBEGIN);
 render(routeFiltersContainer, new RouteFilters(), renderPosition.BEFOREEND);
 
-const tripsPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer, trips);
-tripsPresenter.init();
+const tripsPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer);
+tripsPresenter.init(trips);

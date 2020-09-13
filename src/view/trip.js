@@ -8,7 +8,7 @@ const getgetCreateOfferItemTemplate = (offers) => {
   return `
     ${offers.map((offer) => `
       <li class="event__offer">
-        <span class="event__offer-title">${offer.name}</span>
+        <span class="event__offer-title">${offer.title}</span>
           &plus;
           &euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -17,9 +17,7 @@ const getgetCreateOfferItemTemplate = (offers) => {
   `;
 };
 
-const getTripTemplate = (trips) => {
-  const {type, destination, timeIn, timeOut, price, offers} = trips;
-
+const getTripTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers}) => {
   const offerItemTemplate = getgetCreateOfferItemTemplate(offers);
 
   const getSubb = () => {
@@ -38,19 +36,19 @@ const getTripTemplate = (trips) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${getSubb()} ${destination}</h3>
+        <h3 class="event__title">${type} ${getSubb()} ${destination.name}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${timeIn}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${dateFrom}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${timeOut}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${dateTo}</time>
           </p>
           <p class="event__duration">30M</p>
         </div>
 
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${price}</span>
+          &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
 
         <h4 class="visually-hidden">Offers:</h4>

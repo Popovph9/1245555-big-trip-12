@@ -3,11 +3,11 @@ import {getRandomIndex, getRandomArray, getRandomInteger, getRandomArrayOfCurren
 const TRIP_TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 const DESTINATION = [`Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`];
 const OFFERS = [
-  {name: `Travel by train`, price: 40},
-  {name: `Add luggage`, price: 30},
-  {name: `Switch to comfort class`, price: 100},
-  {name: `Choose seats`, price: 5},
-  {name: `Add meal`, price: 15}
+  {title: `Travel by train`, price: 40},
+  {title: `Add luggage`, price: 30},
+  {title: `Switch to comfort class`, price: 100},
+  {title: `Choose seats`, price: 5},
+  {title: `Add meal`, price: 15}
 ];
 const PHOTOS = [`http://picsum.photos/248/152?r=${Math.random()}`, `http://picsum.photos/248/152?r=${Math.random()}`,
   `http://picsum.photos/248/152?r=${Math.random()}`, `http://picsum.photos/248/152?r=${Math.random()}`,
@@ -31,23 +31,27 @@ const PRICES = {
 };
 const DESCRIPTIONS_MAX = 5;
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const generateType = () => {
   return TRIP_TYPES[getRandomIndex(TRIP_TYPES)];
 };
 
 const generateDestination = () => {
-  return DESTINATION[getRandomIndex(DESTINATION)];
+  return {
+    description: getRandomArrayOfCurrentLength(DESCRIPTIONS, DESCRIPTIONS_MAX),
+    name: DESTINATION[getRandomIndex(DESTINATION)],
+    pictures: [
+      {
+        src: PHOTOS[getRandomIndex(PHOTOS)],
+        description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
+      }
+    ],
+  };
 };
 
 const generateOffers = () => {
   return getRandomArray(OFFERS);
-};
-
-const generateInfo = () => {
-  return {
-    description: getRandomArrayOfCurrentLength(DESCRIPTIONS, DESCRIPTIONS_MAX),
-    photo: getRandomArray(PHOTOS)
-  };
 };
 
 const generateTime = () => {
@@ -69,18 +73,20 @@ const generateDate = () => {
   return new Date(currentDate);
 };
 
+
 export const generateTrip = () => {
-  const price = getRandomInteger(PRICES.min, PRICES.max);
+  const basePrice = getRandomInteger(PRICES.min, PRICES.max);
   const date = generateDate();
 
   return {
+    id: generateId(),
     type: generateType(),
     destination: generateDestination(),
-    timeIn: generateTime(),
-    timeOut: generateTime(),
-    price,
+    dateFrom: generateTime(),
+    dateTo: generateTime(),
+    basePrice,
     offers: generateOffers(),
-    info: generateInfo(),
-    date
+    date,
+    isFavorite: Boolean(getRandomInteger(0, 1)),
   };
 };
