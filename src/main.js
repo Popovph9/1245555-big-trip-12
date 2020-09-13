@@ -19,6 +19,5 @@ render(routeMenuContaier, new RouteMenu(), renderPosition.AFTER);
 render(routeContainer, new Route(trips), renderPosition.AFTERBEGIN);
 render(routeFiltersContainer, new RouteFilters(), renderPosition.BEFOREEND);
 
-console.log(trips)
 const tripsPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer);
 tripsPresenter.init(trips);

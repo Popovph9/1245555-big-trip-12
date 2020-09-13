@@ -20,8 +20,6 @@ export default class SmartClass extends AbstractClass {
     if (justDataUpdating) {
       return;
     }
-
-    this.updateElement();
   }
 
   updateElement() {

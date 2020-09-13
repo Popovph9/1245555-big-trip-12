@@ -100,6 +100,9 @@ export default class TripsListPresenter {
       case SORT_TYPES.event:
         this._trips = this._sourcedTrips.slice();
         break;
+      default:
+        this._trips = this._sourcedTrips.slice();
+        throw new Error(`Unexpected sort value`);
     }
   }
 
@@ -107,7 +110,7 @@ export default class TripsListPresenter {
     render(this._tripsFiltersContainer, this._filtersComponent, renderPosition.AFTER);
     this._filtersComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
-  // WIP
+
   _clearTripsList() {
     this._mainContentComponent.getElement().innerHTML = ``;
     this._mainContentComponent.removeElement();
@@ -125,7 +128,7 @@ export default class TripsListPresenter {
     tripPesenter.init(trip);
     this._tripPesenter[trip.id] = tripPesenter;
   }
-  //
+
   _renderCards() {
     const dateFields = this._mainContentComponent.getElement().querySelectorAll(`.day__date`);
 

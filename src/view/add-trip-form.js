@@ -95,9 +95,7 @@ const getCreatePhotoTemplate = (arr) => {
   return arr.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join(``);
 };
 
-const getEditTripTemplate = (trips) => {
-  const {type, destination, offers, timeIn, timeOut, basePrice, isFavorite, isOffers, isDescription, isPhoto} = trips;
-
+const getEditTripTemplate = ({type, destination, offers, timeIn, timeOut, basePrice, isFavorite, isOffers, isDescription, isPhoto}) => {
   const getSubb = () => {
     let subb = PREPOSITION.to;
 
@@ -234,6 +232,7 @@ export default class TripEditForm extends SmartClass {
 
   reset(trip) {
     this.updateData(TripEditForm.parseTripToData(trip));
+    this.updateElement();
   }
 
   _customSaveButtonClickHandler(evt) {
@@ -254,11 +253,13 @@ export default class TripEditForm extends SmartClass {
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({type: evt.currentTarget.value});
+    this.updateElement();
   }
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({name: this._destinationField.value}, true);
+    this.updateElement();
   }
 
   setCustomSaveButtonClickHandler(callback) {
@@ -302,7 +303,7 @@ export default class TripEditForm extends SmartClass {
     data = Object.assign({}, data);
 
     if (data.name) {
-      data.description.name = data.name;
+      data.destination.name = data.name;
       delete data.name;
     }
 
