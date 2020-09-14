@@ -3,7 +3,7 @@ import Date from "../view/date.js";
 import TripPesenter from "./trip-presenter.js";
 import NoTripPlaceholder from "../view/no-trip-placeholder.js";
 import {render, renderPosition} from "../utils/render.js";
-import {humanizeDate, updateItem} from "../utils/common.js";
+import {updateItem} from "../utils/common.js";
 
 import SortModeMainContainer from "../view/sort-mode-main-container.js";
 import BlankListElement from "../view/blank-list.js";
@@ -11,6 +11,8 @@ import BlanckDateBlock from "../view/blanck-date.js";
 import SortModeTripsListContainer from "../view/sort-mode-tripsList-container.js";
 import {SORT_TYPES} from "../const.js";
 import {sortTripsByPrice, sortTripsByTime} from "../utils/filters.js";
+
+import {formatDateToHumanize} from "../utils/common.js";
 
 export default class TripsListPresenter {
   constructor(tripsContainer, tripsFiltersContainer) {
@@ -137,7 +139,7 @@ export default class TripsListPresenter {
 
     for (let i = 0; i < containersArray.length; i++) {
       const currentDateValue = dateFields[i].innerHTML;
-      this._trips.filter((it) => humanizeDate(it.date).includes(currentDateValue)).forEach((trip) => {
+      this._trips.filter((it) => formatDateToHumanize(it.dateFrom).includes(currentDateValue)).forEach((trip) => {
         this._renderCard(containersArray[i], trip);
       });
     }

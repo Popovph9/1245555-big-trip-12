@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -38,6 +40,24 @@ export const getRandomIndex = (arr) => {
 
 export const humanizeDate = (longDate) => {
   return longDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`});
+};
+
+export const formatDateToHours = (date) => {
+  return moment(date).format(`HH:mm`);
+};
+
+export const formatDateToHumanize = (date) => {
+  return moment(date).format(`MMM D`);
+};
+
+export const formatDateToString = (date) => {
+  return moment(date).format(`YYYY-MM-DDTHH`);
+};
+
+export const getDuration = (x, y) => {
+  x = moment(x);
+  y = moment(y);
+  return moment.duration(y.diff(x));
 };
 
 export const updateItem = (items, update) => {
