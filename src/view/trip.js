@@ -1,8 +1,35 @@
 import {PREPOSITION} from "../const.js";
 import {ACTIVITY} from "../const.js";
 import AbstractClass from "./abstract-class.js";
+import {formatDateToHours, formatDateToString, getDuration} from "../utils/common.js";
 
 const MAX_RENDERED_OFFERS = 3;
+
+const getDurationTemplate = (duration) => {
+  let days = ``;
+  let hours = ``;
+  let minutes = ``;
+
+  if (duration.get(`days`) !== 0) {
+    days = `${duration.get(`days`)}D`;
+  } else {
+    days = ``;
+  }
+
+  if (duration.get(`hours`) !== 0) {
+    hours = `${duration.get(`hours`)}H`;
+  } else {
+    hours = ``;
+  }
+
+  if (duration.get(`minutes`) !== 0) {
+    minutes = `${duration.get(`minutes`)}M`;
+  } else {
+    minutes = ``;
+  }
+
+  return `${days} ${hours} ${minutes}`;
+};
 
 const getgetCreateOfferItemTemplate = (offers) => {
   return `
@@ -18,7 +45,10 @@ const getgetCreateOfferItemTemplate = (offers) => {
 };
 
 const getTripTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers}) => {
+
   const offerItemTemplate = getgetCreateOfferItemTemplate(offers);
+  const duration = getDuration(dateFrom, dateTo);
+  const durationTemplate = getDurationTemplate(duration);
 
   const getSubb = () => {
     let subb = PREPOSITION.to;
@@ -40,11 +70,11 @@ const getTripTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${dateFrom}</time>
+            <time class="event__start-time" datetime="${formatDateToString(dateFrom)}">${formatDateToHours(dateFrom)}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${dateTo}</time>
+            <time class="event__end-time" datetime="${formatDateToString(dateTo)}">${formatDateToHours(dateTo)}</time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${durationTemplate}</p>
         </div>
 
         <p class="event__price">

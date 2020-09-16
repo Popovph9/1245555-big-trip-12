@@ -17,14 +17,8 @@ const DESCRIPTIONS = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
   `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
   `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
 
-const HOUR = {
-  min: 0,
-  max: 24
-};
-const MINUTE = {
-  min: 0,
-  max: 60
-};
+const DATE_FROM = [`2019-01-10T22:55:56.845Z`, `2019-02-10T22:00:00.845Z`, `2019-02-10T10:30:56.845Z`, `2019-03-10T01:15:56.845Z`];
+const DATE_TO = [`2019-08-09T11:22:13.375Z`, `2019-07-10T22:00:00.845Z`, `2019-07-10T10:30:56.845Z`, `2019-07-10T01:15:56.845Z`];
 const PRICES = {
   min: 20,
   max: 500
@@ -54,39 +48,25 @@ const generateOffers = () => {
   return getRandomArray(OFFERS);
 };
 
-const generateTime = () => {
-  const hours = getRandomInteger(HOUR.min, HOUR.max);
-  const min = getRandomInteger(MINUTE.min, MINUTE.max);
-  const time = `${hours} : ${min}`;
-
-  return time;
+const generateDateFrom = () => {
+  return DATE_FROM[getRandomIndex(DATE_FROM)];
 };
 
-const generateDate = () => {
-  const maxDaysGap = 7;
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
-
-  const currentDate = new Date();
-  currentDate.setHours(23, 59, 59, 999);
-  currentDate.setDate(currentDate.getDate() + daysGap);
-
-  return new Date(currentDate);
+const generateDateTo = () => {
+  return DATE_TO[getRandomIndex(DATE_TO)];
 };
-
 
 export const generateTrip = () => {
   const basePrice = getRandomInteger(PRICES.min, PRICES.max);
-  const date = generateDate();
 
   return {
     id: generateId(),
     type: generateType(),
     destination: generateDestination(),
-    dateFrom: generateTime(),
-    dateTo: generateTime(),
+    dateFrom: generateDateFrom(),
+    dateTo: generateDateTo(),
     basePrice,
     offers: generateOffers(),
-    date,
     isFavorite: Boolean(getRandomInteger(0, 1)),
   };
 };

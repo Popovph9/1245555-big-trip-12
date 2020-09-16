@@ -3,6 +3,9 @@ import {ACTIVITY_TYPES} from "../const.js";
 import {PREPOSITION} from "../const.js";
 import {ACTIVITY} from "../const.js";
 import SmartClass from "./smart-class.js";
+import flatpickr from "flatpickr";
+
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const OFFERS_NAME = {
   addLuggage: `Add luggage`,
@@ -219,6 +222,8 @@ export default class TripEditForm extends SmartClass {
   constructor(trips = BLANC_TRIP) {
     super();
 
+    this._datepicker = null;
+
     this._trips = trips;
     this._data = TripEditForm.parseTripToData(trips);
     this._customSaveButtonClickHandler = this._customSaveButtonClickHandler.bind(this);
@@ -226,13 +231,25 @@ export default class TripEditForm extends SmartClass {
     this._favoriteButtonClickHandler = this._favoriteButtonClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepicker();
   }
 
   reset(trip) {
     this.updateData(TripEditForm.parseTripToData(trip));
     this.updateElement();
+  }
+
+  _dateFromChangeHandler([userDate]) {
+    this.updateData({dateFrom: userDate});
+    this.updateElement();
+  }
+
+  _dateToChangeHandler([userDate]) {
+    this.updateData({dateTo: userDate});
   }
 
   _customSaveButtonClickHandler(evt) {
@@ -260,6 +277,36 @@ export default class TripEditForm extends SmartClass {
     evt.preventDefault();
     this.updateData({name: this._destinationField.value});
     this.updateElement();
+  }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+        this.getElement().querySelector(`#event-start-time-1`),
+        {
+          dateFormat: `d/m/Y H:i`,
+          enableTime: true,
+          minuteIncrement: 1,
+          defaultDate: this._data.dateFrom,
+          onChange: this._dateFromChangeHandler
+        }
+    );
+
+    this._datepicker = flatpickr(
+        this.getElement().querySelector(`#event-end-time-1`),
+        {
+          dateFormat: `d/m/Y H:i`,
+          enableTime: true,
+          minuteIncrement: 1,
+          defaultDate: this._data.dateTo,
+          minDate: this._data.dateFrom,
+          onChange: this._dateToChangeHandler
+        }
+    );
   }
 
   setCustomSaveButtonClickHandler(callback) {
@@ -318,5 +365,6 @@ export default class TripEditForm extends SmartClass {
     this._setInnerHandlers();
     this.setCustomCloseButtonClickHandler(this._callback.editClose);
     this.setCustomSaveButtonClickHandler(this._callback.editSave);
+    this._setDatepicker();
   }
 }

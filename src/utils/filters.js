@@ -1,5 +1,8 @@
+import moment from "moment";
+import {getDuration} from "./common.js";
+
 export const sortTripsByTime = (tripA, tripB) => {
-  return tripB.date.getTime() - tripA.date.getTime();
+  return getDuration(tripB.dateFrom, tripB.dateTo) - getDuration(tripA.dateFrom, tripA.dateTo);
 };
 
 export const sortTripsByPrice = (tripA, tripB) => {
@@ -7,5 +10,5 @@ export const sortTripsByPrice = (tripA, tripB) => {
 };
 
 export const sortTripsByDate = (tripA, tripB) => {
-  return tripA.date.getDate() - tripB.date.getDate();
+  return moment(tripA.dateFrom) - moment(tripB.dateFrom);
 };

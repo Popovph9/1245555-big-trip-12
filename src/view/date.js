@@ -1,13 +1,13 @@
 import AbstractClass from "./abstract-class.js";
-import {humanizeDate} from "../utils/common.js";
 import {sortTripsByDate} from "../utils/filters.js";
+import {formatDateToHumanize} from "../utils/common.js";
 
 const getPeriodTemplate = (arr) => {
   return `${arr.map((it) => `<li class="trip-days__item  day">
   <div class="day__info">
     <span class="day__counter">${arr.indexOf(it) + 1}</span>
 
-    <time class="day__date" datetime="2019-03-18">${humanizeDate(it)}</time>
+    <time class="day__date" datetime="2019-03-18">${it}</time>
   </div>
 
   <ul class="trip-events__list"></ul>
@@ -15,9 +15,10 @@ const getPeriodTemplate = (arr) => {
 };
 
 const getDateTemplate = (trips) => {
-  const sortedTrips = trips.sort(sortTripsByDate);
-  const getUniqueDates = Array.from(new Set(sortedTrips.map((it) => humanizeDate(it.date))));
-  const periodTemplate = getPeriodTemplate(getUniqueDates);
+  trips.sort(sortTripsByDate);
+  const formatedTrips = Array.from(new Set(trips.map((it) => formatDateToHumanize(it.dateFrom))));
+  const periodTemplate = getPeriodTemplate(formatedTrips);
+
   return (
     `<ul class="trip-days">
       ${periodTemplate}

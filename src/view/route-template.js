@@ -1,5 +1,5 @@
 import AbstractClass from "./abstract-class.js";
-import {humanizeDate} from "../utils/common.js";
+import {formatDateToHumanize} from "../utils/common.js";
 import {sortTripsByDate} from "../utils/filters.js";
 
 const RENDERED_DESTINATIONS = 3;
@@ -24,7 +24,7 @@ const getCreateTripDurationTemplate = (arr) => {
   const last = arr[arr.length - 1];
   shortArr.push(first);
   shortArr.push(last);
-  return shortArr.map((it) => `${humanizeDate(it.date)}`).join(` — `);
+  return shortArr.map((it) => `${formatDateToHumanize(it.dateFrom)}`).join(` — `);
 };
 
 const getPrice = (arr) => {
