@@ -1,4 +1,5 @@
-import {render, renderPosition, replace, remove} from "../utils/render.js";
+import {render, RENDER_POSITION, replace, remove} from "../utils/render.js";
+import {UPDATE_TYPE, USER_ACTION} from "../const.js";
 import TripEditForm from "../view/add-trip-form.js";
 import Trip from "../view/trip.js";
 
@@ -21,6 +22,7 @@ export default class TripPesenter {
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleSulbmitClick = this._handleSulbmitClick.bind(this);
     this._handleResetClick = this._handleResetClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
@@ -37,9 +39,10 @@ export default class TripPesenter {
     this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);
     this._tripEditComponent.setCustomCloseButtonClickHandler(this._handleResetClick);
     this._tripEditComponent.setFavoriteButtonClickHandler(this._handleFavoriteClick);
+    this._tripEditComponent.setFormDeleteClickHandler(this._handleDeleteClick);
 
     if (prevTripComponent === null || prevTripEditComponent === null) {
-      render(this._tripContainer, this._tripComponent, renderPosition.BEFOREEND);
+      render(this._tripContainer, this._tripComponent, RENDER_POSITION.BEFOREEND);
       return;
     }
     if (this._mode === mode.DEFAULT) {
@@ -71,7 +74,7 @@ export default class TripPesenter {
   }
 
   _handleSulbmitClick(trip) {
-    this._changeData(trip);
+    this._changeData(USER_ACTION.UPDATE_TASK, UPDATE_TYPE.MINOR, trip);
     this._replaceFormToCard();
   }
 
@@ -80,8 +83,12 @@ export default class TripPesenter {
     this._replaceFormToCard();
   }
 
+  _handleDeleteClick(trip) {
+    this._changeData(USER_ACTION.DELETE_TASK, UPDATE_TYPE.MAJOR, trip);
+  }
+
   _handleFavoriteClick() {
-    this._changeData(Object.assign({}, this._trip, {isFavorite: !this._trip.isFavorite}));
+    this._changeData(USER_ACTION.UPDATE_TASK, UPDATE_TYPE.PATCH, Object.assign({}, this._trip, {isFavorite: !this._trip.isFavorite}));
   }
 
   _escKeydownHandler(evt) {

@@ -1,6 +1,6 @@
 import AbstractClass from "../view/abstract-class";
 
-export const renderPosition = {
+export const RENDER_POSITION = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
   AFTER: `after`
@@ -23,13 +23,13 @@ export const render = (container, child, place) => {
   }
 
   switch (place) {
-    case renderPosition.AFTERBEGIN:
+    case RENDER_POSITION.AFTERBEGIN:
       container.prepend(child);
       break;
-    case renderPosition.BEFOREEND:
+    case RENDER_POSITION.BEFOREEND:
       container.append(child);
       break;
-    case renderPosition.AFTER:
+    case RENDER_POSITION.AFTER:
       container.after(child);
       break;
   }

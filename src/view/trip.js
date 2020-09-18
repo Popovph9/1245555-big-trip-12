@@ -51,10 +51,10 @@ const getTripTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers
   const durationTemplate = getDurationTemplate(duration);
 
   const getSubb = () => {
-    let subb = PREPOSITION.to;
+    let subb = PREPOSITION.TO;
 
-    if (type === ACTIVITY.check || type === ACTIVITY.sight || type === ACTIVITY.rest) {
-      subb = PREPOSITION.in;
+    if (type === ACTIVITY.CHECK || type === ACTIVITY.SIGHT || type === ACTIVITY.REST) {
+      subb = PREPOSITION.IN;
     }
 
     return subb;
