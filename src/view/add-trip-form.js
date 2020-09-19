@@ -1,30 +1,30 @@
-import {TRANSFER_TYPES, ACTIVITY_TYPES, PREPOSITION, ACTIVITY, DESTINATION} from "../const.js";
+import {TRANSFER_TYPES, ACTIVITY_TYPES, Preposition, Activity, DESTINATION} from "../const.js";
 import SmartClass from "./smart-class.js";
 import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import he from "he";
 
-const OFFERS_NAME = {
-  addLuggage: `Add luggage`,
-  travelByTrain: `Travel by train`,
-  switchToComfort: `Switch to comfort class`,
-  chooseSeats: `Choose seats`,
-  addMeal: `Add meal`
+const OffersName = {
+  ADD_LUGGAGE: `Add luggage`,
+  TRAVEL_BY_TRAIN: `Travel by train`,
+  SWITCH_CLASS: `Switch to comfort class`,
+  CHOOSE_SEATS: `Choose seats`,
+  ADD_MEAL: `Add meal`
 };
-const CLASS_NAME = {
-  luggage: `luggage`,
-  train: `train`,
-  comfort: `comfort`,
-  seats: `seats`,
-  meal: `meal`
+const ClassName = {
+  LUGGAGE: `luggage`,
+  TRAIN: `train`,
+  COMFORT: `comfort`,
+  SEATS: `seats`,
+  MEAL: `meal`
 };
-const RESET_PLACEHOLDER = {
+const ResetPlaceholder = {
   DELETE: `Delete`,
   CANCEL: `Cancel`
 };
 
-const BLANC_TRIP = {
+const BlancTrip = {
   type: TRANSFER_TYPES[0],
   destination: {
     description: ``,
@@ -71,17 +71,17 @@ const getCreateChooseDestinationTemplate = (arr) => {
 };
 
 const getClassName = (offer) => {
-  let name = CLASS_NAME.luggage;
-  if (offer.title === OFFERS_NAME.addLuggage) {
-    name = CLASS_NAME.luggage;
-  } else if (offer.title === OFFERS_NAME.travelByTrain) {
-    name = CLASS_NAME.train;
-  } else if (offer.title === OFFERS_NAME.switchToComfort) {
-    name = CLASS_NAME.comfort;
-  } else if (offer.title === OFFERS_NAME.chooseSeats) {
-    name = CLASS_NAME.seats;
-  } else if (offer.title === OFFERS_NAME.addMeal) {
-    name = CLASS_NAME.meal;
+  let name = ClassName.LUGGAGE;
+  if (offer.title === OffersName.ADD_LUGGAGE) {
+    name = ClassName.LUGGAGE;
+  } else if (offer.title === OffersName.TRAVEL_BY_TRAIN) {
+    name = ClassName.TRAIN;
+  } else if (offer.title === OffersName.SWITCH_CLASS) {
+    name = ClassName.COMFORT;
+  } else if (offer.title === OffersName.CHOOSE_SEATS) {
+    name = ClassName.SEATS;
+  } else if (offer.title === OffersName.ADD_MEAL) {
+    name = ClassName.MEAL;
   }
   return name;
 };
@@ -108,10 +108,10 @@ const getCreatePhotoTemplate = (arr) => {
 const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, basePrice, isFavorite, isOffers, isDescription, isPhoto, isNew}) => {
 
   const getSubb = () => {
-    let subb = PREPOSITION.TO;
+    let subb = Preposition.TO;
 
-    if (type === ACTIVITY.CHECK || type === ACTIVITY.SIGHT || type === ACTIVITY.REST) {
-      subb = PREPOSITION.IN;
+    if (type === Activity.CHECK || type === Activity.SIGHT || type === Activity.REST) {
+      subb = Preposition.IN;
     }
 
     return subb;
@@ -152,7 +152,7 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type} ${getSubb()}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"  value="${he.encode(destination.name)}" list="destination-list-1" autocomplete="off">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"  value="${he.encode(destination.name)}" list="destination-list-1" autocomplete="off" required>
           <datalist id="destination-list-1">
             ${destinationTemplate}
           </datalist>
@@ -180,7 +180,7 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
 
-        <button class="event__reset-btn" type="reset">${isNew ? RESET_PLACEHOLDER.CANCEL : RESET_PLACEHOLDER.DELETE}</button>
+        <button class="event__reset-btn" type="reset">${isNew ? ResetPlaceholder.CANCEL : ResetPlaceholder.DELETE}</button>
 
         ${isNew ? `` : `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
@@ -197,7 +197,7 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
 
       ${destination.name !== `` ? `
       <section class="event__details">
-        ${isOffers || BLANC_TRIP.offers.length > 0 ? `
+        ${isOffers || BlancTrip.offers.length > 0 ? `
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
@@ -227,7 +227,7 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
 };
 
 export default class TripEditForm extends SmartClass {
-  constructor(trips = BLANC_TRIP) {
+  constructor(trips = BlancTrip) {
     super();
 
     this._datepicker = null;
@@ -290,6 +290,7 @@ export default class TripEditForm extends SmartClass {
   _destinationChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({name: this._destinationField.value});
+    TripEditForm.parseDataToTrip(this._data);
     this.updateElement();
   }
 
@@ -341,29 +342,47 @@ export default class TripEditForm extends SmartClass {
     if (this._data.isNew) {
       return;
     }
+
     this._callback.editClose = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._customCloseButtonClickHandler);
+
+    const customCloseButton = this.getElement().querySelector(`.event__rollup-btn`);
+    if (customCloseButton) {
+      customCloseButton.addEventListener(`click`, this._customCloseButtonClickHandler);
+    }
   }
 
   setFormDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
+
+    const formDeleteButton = this.getElement().querySelector(`.event__reset-btn`);
+    if (formDeleteButton) {
+      formDeleteButton.addEventListener(`click`, this._formDeleteClickHandler);
+    }
   }
 
   setFavoriteButtonClickHandler(callback) {
     if (this._data.isNew) {
       return;
     }
+
     this._callback.favoriteClick = callback;
-    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteButtonClickHandler);
+
+    const favoriteButton = this.getElement().querySelector(`.event__favorite-checkbox`);
+    if (favoriteButton) {
+      favoriteButton.addEventListener(`change`, this._favoriteButtonClickHandler);
+    }
   }
 
   _setInnerHandlers() {
     this._typeFields = this.getElement().querySelectorAll(`.event__type-input`);
-    this._typeFields.forEach((field) => field.addEventListener(`change`, this._typeChangeHandler));
+    if (this._typeFields) {
+      this._typeFields.forEach((field) => field.addEventListener(`change`, this._typeChangeHandler));
+    }
 
     this._destinationField = this.getElement().querySelector(`#event-destination-1`);
-    this._destinationField.addEventListener(`change`, this._destinationChangeHandler);
+    if (this._destinationField) {
+      this._destinationField.addEventListener(`change`, this._destinationChangeHandler);
+    }
   }
 
   getTemplate() {

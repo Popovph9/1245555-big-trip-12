@@ -1,9 +1,9 @@
-import {render, RENDER_POSITION, replace, remove} from "../utils/render.js";
-import {UPDATE_TYPE, USER_ACTION} from "../const.js";
+import {render, RenderPosition, replace, remove} from "../utils/render.js";
+import {UpdateType, UserAction} from "../const.js";
 import TripEditForm from "../view/add-trip-form.js";
 import Trip from "../view/trip.js";
 
-const mode = {
+const Mode = {
   DEFAULT: `DEFAULT`,
   EDITING: `EDITING`
 };
@@ -16,7 +16,7 @@ export default class TripPesenter {
 
     this._tripComponent = null;
     this._tripEditComponent = null;
-    this._mode = mode.DEFAULT;
+    this._mode = Mode.DEFAULT;
 
     this._escKeydownHandler = this._escKeydownHandler.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
@@ -42,13 +42,13 @@ export default class TripPesenter {
     this._tripEditComponent.setFormDeleteClickHandler(this._handleDeleteClick);
 
     if (prevTripComponent === null || prevTripEditComponent === null) {
-      render(this._tripContainer, this._tripComponent, RENDER_POSITION.BEFOREEND);
+      render(this._tripContainer, this._tripComponent, RenderPosition.BEFOREEND);
       return;
     }
-    if (this._mode === mode.DEFAULT) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._tripComponent, prevTripComponent);
     }
-    if (this._mode === mode.EDITING) {
+    if (this._mode === Mode.EDITING) {
       replace(this._tripEditComponent, prevTripEditComponent);
     }
 
@@ -60,13 +60,13 @@ export default class TripPesenter {
     replace(this._tripEditComponent, this._tripComponent);
     document.addEventListener(`keydown`, this._escKeydownHandler);
     this._changeMode();
-    this._mode = mode.EDITING;
+    this._mode = Mode.EDITING;
   }
 
   _replaceFormToCard() {
     replace(this._tripComponent, this._tripEditComponent);
     document.removeEventListener(`keydown`, this._escKeydownHandler);
-    this._mode = mode.DEFAULT;
+    this._mode = Mode.DEFAULT;
   }
 
   _handleEditClick() {
@@ -74,7 +74,7 @@ export default class TripPesenter {
   }
 
   _handleSulbmitClick(trip) {
-    this._changeData(USER_ACTION.UPDATE_TASK, UPDATE_TYPE.MINOR, trip);
+    this._changeData(UserAction.UPDATE_TASK, UpdateType.MINOR, trip);
     this._replaceFormToCard();
   }
 
@@ -84,11 +84,11 @@ export default class TripPesenter {
   }
 
   _handleDeleteClick(trip) {
-    this._changeData(USER_ACTION.DELETE_TASK, UPDATE_TYPE.MAJOR, trip);
+    this._changeData(UserAction.DELETE_TASK, UpdateType.MAJOR, trip);
   }
 
   _handleFavoriteClick() {
-    this._changeData(USER_ACTION.UPDATE_TASK, UPDATE_TYPE.PATCH, Object.assign({}, this._trip, {isFavorite: !this._trip.isFavorite}));
+    this._changeData(UserAction.UPDATE_TASK, UpdateType.PATCH, Object.assign({}, this._trip, {isFavorite: !this._trip.isFavorite}));
   }
 
   _escKeydownHandler(evt) {
@@ -105,7 +105,7 @@ export default class TripPesenter {
   }
 
   resetView() {
-    if (this._mode !== mode.DEFAULT) {
+    if (this._mode !== Mode.DEFAULT) {
       this._tripEditComponent.reset(this._trip);
       this._replaceFormToCard();
     }

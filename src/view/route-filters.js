@@ -1,24 +1,24 @@
 import AbstractClass from "./abstract-class.js";
-import {FILTER_TYPE} from "../const.js";
+import {FilterType} from "../const.js";
 
 const getRouteFiltersTemplate = (currentFilterType) => {
   return (
     `<form class="trip-filters" action="#" method="get">
 
       <div class="trip-filters__filter">
-        <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" ${currentFilterType === FILTER_TYPE.EVERYTHING ? `checked` : ``}>
+        <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" ${currentFilterType === FilterType.EVERYTHING ? `checked` : ``}>
 
         <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
       </div>
 
       <div class="trip-filters__filter">
-        <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future" ${currentFilterType === FILTER_TYPE.FUTURE ? `checked` : ``}>
+        <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future" ${currentFilterType === FilterType.FUTURE ? `checked` : ``}>
 
         <label class="trip-filters__filter-label" for="filter-future">Future</label>
       </div>
 
       <div class="trip-filters__filter">
-        <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past" ${currentFilterType === FILTER_TYPE.PAST ? `checked` : ``}>
+        <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past" ${currentFilterType === FilterType.PAST ? `checked` : ``}>
 
         <label class="trip-filters__filter-label" for="filter-past">Past</label>
       </div>

@@ -1,5 +1,5 @@
-import {UPDATE_TYPE, USER_ACTION} from "../const.js";
-import {render, RENDER_POSITION, remove} from "../utils/render.js";
+import {UpdateType, UserAction} from "../const.js";
+import {render, RenderPosition, remove} from "../utils/render.js";
 import {generateId} from "../utils/common.js";
 import TripEditForm from "../view/add-trip-form.js";
 
@@ -8,7 +8,6 @@ export default class AddNewTripPesenter {
     this._tripContainer = tripContainer;
     this._changeData = changeData;
     this._addNewButtonComponent = addNewButton;
-
 
     this._tripEditComponent = null;
 
@@ -19,7 +18,7 @@ export default class AddNewTripPesenter {
 
   init() {
     if (this._tripEditComponent !== null) {
-      return;
+      this._tripEditComponent = null;
     }
 
     this._addNewButtonComponent.disabled = true;
@@ -29,15 +28,15 @@ export default class AddNewTripPesenter {
     this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);
     this._tripEditComponent.setFormDeleteClickHandler(this._handleDeleteClick);
 
-    render(this._tripContainer, this._tripEditComponent, RENDER_POSITION.AFTERBEGIN);
+    render(this._tripContainer, this._tripEditComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener(`keydown`, this._escKeydownHandler);
   }
 
   _handleSulbmitClick(trip) {
     this._changeData(
-        USER_ACTION.ADD_TASK,
-        UPDATE_TYPE.MAJOR,
+        UserAction.ADD_TASK,
+        UpdateType.MAJOR,
         Object.assign({id: generateId()}, trip)
     );
     this.destroy();

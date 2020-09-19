@@ -20,10 +20,8 @@ tripsModel.setTrips(trips);
 
 const filterModel = new FilterModel();
 
-
-const siteMenuPresenter = new SiteMenuPresenter(routeContainer, tripsModel, filterModel);
-
 const tripsListPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton);
+const siteMenuPresenter = new SiteMenuPresenter(routeContainer, tripsModel, filterModel, tripsListPresenter, tripsContainer, addNewButton);
 
 siteMenuPresenter.init();
 tripsListPresenter.init();
