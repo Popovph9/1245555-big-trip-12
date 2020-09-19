@@ -1,6 +1,6 @@
 import AbstractClass from "./abstract-class.js";
 import {formatDateToHumanize} from "../utils/common.js";
-import {sortTripsByDate} from "../utils/filters.js";
+import {sortTripsByDate} from "../utils/sorting.js";
 
 const RENDERED_DESTINATIONS = 3;
 

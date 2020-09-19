@@ -1,38 +1,45 @@
-import {TRANSFER_TYPES} from "../const.js";
-import {ACTIVITY_TYPES} from "../const.js";
-import {PREPOSITION} from "../const.js";
-import {ACTIVITY} from "../const.js";
+import {TRANSFER_TYPES, ACTIVITY_TYPES, Preposition, Activity, DESTINATION} from "../const.js";
 import SmartClass from "./smart-class.js";
 import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
+import he from "he";
 
-const OFFERS_NAME = {
-  addLuggage: `Add luggage`,
-  travelByTrain: `Travel by train`,
-  switchToComfort: `Switch to comfort class`,
-  chooseSeats: `Choose seats`,
-  addMeal: `Add meal`
+const OffersName = {
+  ADD_LUGGAGE: `Add luggage`,
+  TRAVEL_BY_TRAIN: `Travel by train`,
+  SWITCH_CLASS: `Switch to comfort class`,
+  CHOOSE_SEATS: `Choose seats`,
+  ADD_MEAL: `Add meal`
 };
-const CLASS_NAME = {
-  luggage: `luggage`,
-  train: `train`,
-  comfort: `comfort`,
-  seats: `seats`,
-  meal: `meal`
+const ClassName = {
+  LUGGAGE: `luggage`,
+  TRAIN: `train`,
+  COMFORT: `comfort`,
+  SEATS: `seats`,
+  MEAL: `meal`
+};
+const ResetPlaceholder = {
+  DELETE: `Delete`,
+  CANCEL: `Cancel`
 };
 
-const BLANC_TRIP = {
+const BlancTrip = {
   type: TRANSFER_TYPES[0],
-  destination: [``],
+  destination: {
+    description: ``,
+    name: ``,
+    pictures: [
+      {
+        src: [],
+        description: ``,
+      }
+    ],
+  },
   dateFrom: ``,
   dateTo: ``,
-  price: 0,
-  offers: [{name: ``, price: 0}],
-  info: {
-    description: [``],
-    photo: [``]
-  }
+  basePrice: 0,
+  offers: [],
 };
 
 const getCreateChooseTransferTypeTemplate = (it) => {
@@ -59,22 +66,22 @@ const getCreateChooseActivityTypeTemplate = (it) => {
   `).join(``);
 };
 
-const getCreateChooseDestinationTemplate = (destination) => {
-  return `<option value="${destination}"></option>`;
+const getCreateChooseDestinationTemplate = (arr) => {
+  return arr.map((it) => `<option value="${it}">${it}</option>`);
 };
 
 const getClassName = (offer) => {
-  let name = CLASS_NAME.luggage;
-  if (offer.title === OFFERS_NAME.addLuggage) {
-    name = CLASS_NAME.luggage;
-  } else if (offer.title === OFFERS_NAME.travelByTrain) {
-    name = CLASS_NAME.train;
-  } else if (offer.title === OFFERS_NAME.switchToComfort) {
-    name = CLASS_NAME.comfort;
-  } else if (offer.title === OFFERS_NAME.chooseSeats) {
-    name = CLASS_NAME.seats;
-  } else if (offer.title === OFFERS_NAME.addMeal) {
-    name = CLASS_NAME.meal;
+  let name = ClassName.LUGGAGE;
+  if (offer.title === OffersName.ADD_LUGGAGE) {
+    name = ClassName.LUGGAGE;
+  } else if (offer.title === OffersName.TRAVEL_BY_TRAIN) {
+    name = ClassName.TRAIN;
+  } else if (offer.title === OffersName.SWITCH_CLASS) {
+    name = ClassName.COMFORT;
+  } else if (offer.title === OffersName.CHOOSE_SEATS) {
+    name = ClassName.SEATS;
+  } else if (offer.title === OffersName.ADD_MEAL) {
+    name = ClassName.MEAL;
   }
   return name;
 };
@@ -98,12 +105,13 @@ const getCreatePhotoTemplate = (arr) => {
   return arr.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join(``);
 };
 
-const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, basePrice, isFavorite, isOffers, isDescription, isPhoto}) => {
-  const getSubb = () => {
-    let subb = PREPOSITION.to;
+const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, basePrice, isFavorite, isOffers, isDescription, isPhoto, isNew}) => {
 
-    if (type === ACTIVITY.check || type === ACTIVITY.sight || type === ACTIVITY.rest) {
-      subb = PREPOSITION.in;
+  const getSubb = () => {
+    let subb = Preposition.TO;
+
+    if (type === Activity.CHECK || type === Activity.SIGHT || type === Activity.REST) {
+      subb = Preposition.IN;
     }
 
     return subb;
@@ -111,7 +119,7 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
 
   const transferTypeTemplate = getCreateChooseTransferTypeTemplate(type);
   const activityTypeTemplate = getCreateChooseActivityTypeTemplate(type);
-  const destinationTemplate = getCreateChooseDestinationTemplate(destination.name);
+  const destinationTemplate = getCreateChooseDestinationTemplate(DESTINATION);
   const offersTemplate = getCreateChooseOffersTemplate(offers);
   const photoTemplate = getCreatePhotoTemplate(destination.pictures);
 
@@ -144,9 +152,9 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type} ${getSubb()}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name || ``}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"  value="${he.encode(destination.name)}" list="destination-list-1" autocomplete="off" required>
           <datalist id="destination-list-1">
-            ${destinationTemplate || ``}
+            ${destinationTemplate}
           </datalist>
         </div>
 
@@ -154,12 +162,12 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}" required>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}" required>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -172,9 +180,9 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
 
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">${isNew ? ResetPlaceholder.CANCEL : ResetPlaceholder.DELETE}</button>
 
-        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+        ${isNew ? `` : `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -184,12 +192,12 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
 
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
-        </button>
+        </button>`}
       </header>
 
-      ${destination.name ? `
+      ${destination.name !== `` ? `
       <section class="event__details">
-        ${isOffers ? `
+        ${isOffers || BlancTrip.offers.length > 0 ? `
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
@@ -219,7 +227,7 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
 };
 
 export default class TripEditForm extends SmartClass {
-  constructor(trips = BLANC_TRIP) {
+  constructor(trips = BlancTrip) {
     super();
 
     this._datepicker = null;
@@ -228,6 +236,7 @@ export default class TripEditForm extends SmartClass {
     this._data = TripEditForm.parseTripToData(trips);
     this._customSaveButtonClickHandler = this._customSaveButtonClickHandler.bind(this);
     this._customCloseButtonClickHandler = this._customCloseButtonClickHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._favoriteButtonClickHandler = this._favoriteButtonClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
@@ -262,6 +271,11 @@ export default class TripEditForm extends SmartClass {
     this._callback.editClose();
   }
 
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(TripEditForm.parseDataToTrip(this._data));
+  }
+
   _favoriteButtonClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoriteClick();
@@ -276,6 +290,7 @@ export default class TripEditForm extends SmartClass {
   _destinationChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({name: this._destinationField.value});
+    TripEditForm.parseDataToTrip(this._data);
     this.updateElement();
   }
 
@@ -309,28 +324,65 @@ export default class TripEditForm extends SmartClass {
     );
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
   setCustomSaveButtonClickHandler(callback) {
     this._callback.editSave = callback;
     this.getElement().addEventListener(`submit`, this._customSaveButtonClickHandler);
   }
 
   setCustomCloseButtonClickHandler(callback) {
+    if (this._data.isNew) {
+      return;
+    }
+
     this._callback.editClose = callback;
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._customCloseButtonClickHandler);
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._customCloseButtonClickHandler);
+
+    const customCloseButton = this.getElement().querySelector(`.event__rollup-btn`);
+    if (customCloseButton) {
+      customCloseButton.addEventListener(`click`, this._customCloseButtonClickHandler);
+    }
+  }
+
+  setFormDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+
+    const formDeleteButton = this.getElement().querySelector(`.event__reset-btn`);
+    if (formDeleteButton) {
+      formDeleteButton.addEventListener(`click`, this._formDeleteClickHandler);
+    }
   }
 
   setFavoriteButtonClickHandler(callback) {
+    if (this._data.isNew) {
+      return;
+    }
+
     this._callback.favoriteClick = callback;
-    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteButtonClickHandler);
+
+    const favoriteButton = this.getElement().querySelector(`.event__favorite-checkbox`);
+    if (favoriteButton) {
+      favoriteButton.addEventListener(`change`, this._favoriteButtonClickHandler);
+    }
   }
 
   _setInnerHandlers() {
     this._typeFields = this.getElement().querySelectorAll(`.event__type-input`);
-    this._typeFields.forEach((field) => field.addEventListener(`change`, this._typeChangeHandler));
+    if (this._typeFields) {
+      this._typeFields.forEach((field) => field.addEventListener(`change`, this._typeChangeHandler));
+    }
 
     this._destinationField = this.getElement().querySelector(`#event-destination-1`);
-    this._destinationField.addEventListener(`change`, this._destinationChangeHandler);
+    if (this._destinationField) {
+      this._destinationField.addEventListener(`change`, this._destinationChangeHandler);
+    }
   }
 
   getTemplate() {
@@ -340,6 +392,7 @@ export default class TripEditForm extends SmartClass {
   static parseTripToData(trip) {
     return Object.assign({}, trip,
         {
+          isNew: !trip.id,
           isOffers: trip.offers.length !== 0,
           isDescription: trip.destination.description.length !== 0,
           isPhoto: trip.destination.pictures.length !== 0,
@@ -353,7 +406,7 @@ export default class TripEditForm extends SmartClass {
       data.destination.name = data.name;
       delete data.name;
     }
-
+    delete data.isNew;
     delete data.isOffers;
     delete data.isDescription;
     delete data.isPhoto;
@@ -366,5 +419,6 @@ export default class TripEditForm extends SmartClass {
     this.setCustomCloseButtonClickHandler(this._callback.editClose);
     this.setCustomSaveButtonClickHandler(this._callback.editSave);
     this._setDatepicker();
+    this.setFormDeleteClickHandler(this._callback.deleteClick);
   }
 }

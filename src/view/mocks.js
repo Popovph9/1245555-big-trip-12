@@ -1,7 +1,9 @@
 import {getRandomIndex, getRandomArray, getRandomInteger, getRandomArrayOfCurrentLength} from "../utils/common.js";
+import {generateId} from "../utils/common.js";
+import {DESTINATION} from "../const.js";
 
 const TRIP_TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
-const DESTINATION = [`Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`];
+
 const OFFERS = [
   {title: `Travel by train`, price: 40},
   {title: `Add luggage`, price: 30},
@@ -24,8 +26,6 @@ const PRICES = {
   max: 500
 };
 const DESCRIPTIONS_MAX = 5;
-
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const generateType = () => {
   return TRIP_TYPES[getRandomIndex(TRIP_TYPES)];

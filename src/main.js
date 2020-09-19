@@ -1,23 +1,33 @@
-import {render, renderPosition} from "./utils/render";
+
 import {generateTrip} from "./view/mocks.js";
-import Route from "./view/route-template.js";
-import RouteMenu from "./view/route-menu.js";
-import RouteFilters from "./view/route-filters.js";
+import TripsModel from "./model/tripModel.js";
+import FilterModel from "./model/filterModel.js";
+import SiteMenuPresenter from "./presenter/siteMenuPresenter";
 import TripsListPresenter from "./presenter/trips-list-presenter.js";
+
 
 const TRIPS_COUNT = 5;
 
 const trips = new Array(TRIPS_COUNT).fill().map(generateTrip);
 
 const routeContainer = document.querySelector(`.trip-main`);
-const routeFiltersContainer = routeContainer.querySelector(`.trip-main__trip-controls`);
-const routeMenuContaier = routeFiltersContainer.querySelector(`h2`);
 const tripsContainer = document.querySelector(`.trip-events`);
 const tripsFiltersContainer = tripsContainer.querySelector(`h2`);
+const addNewButton = document.querySelector(`.trip-main__event-add-btn`);
 
-render(routeMenuContaier, new RouteMenu(), renderPosition.AFTER);
-render(routeContainer, new Route(trips), renderPosition.AFTERBEGIN);
-render(routeFiltersContainer, new RouteFilters(), renderPosition.BEFOREEND);
+const tripsModel = new TripsModel();
+tripsModel.setTrips(trips);
 
-const tripsPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer);
-tripsPresenter.init(trips);
+const filterModel = new FilterModel();
+
+const tripsListPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton);
+const siteMenuPresenter = new SiteMenuPresenter(routeContainer, tripsModel, filterModel, tripsListPresenter, tripsContainer, addNewButton);
+
+siteMenuPresenter.init();
+tripsListPresenter.init();
+
+
+addNewButton.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  tripsListPresenter.createNewTrip();
+});

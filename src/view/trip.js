@@ -1,5 +1,5 @@
-import {PREPOSITION} from "../const.js";
-import {ACTIVITY} from "../const.js";
+import {Preposition} from "../const.js";
+import {Activity} from "../const.js";
 import AbstractClass from "./abstract-class.js";
 import {formatDateToHours, formatDateToString, getDuration} from "../utils/common.js";
 
@@ -51,10 +51,10 @@ const getTripTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers
   const durationTemplate = getDurationTemplate(duration);
 
   const getSubb = () => {
-    let subb = PREPOSITION.to;
+    let subb = Preposition.TO;
 
-    if (type === ACTIVITY.check || type === ACTIVITY.sight || type === ACTIVITY.rest) {
-      subb = PREPOSITION.in;
+    if (type === Activity.CHECK || type === Activity.SIGHT || type === Activity.REST) {
+      subb = Preposition.IN;
     }
 
     return subb;

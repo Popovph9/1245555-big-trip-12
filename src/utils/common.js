@@ -60,16 +60,24 @@ export const getDuration = (x, y) => {
   return moment.duration(y.diff(x));
 };
 
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
+export const getCurrentDate = () => {
+  const currentDate = new Date();
+  currentDate.setHours(23, 59, 59, 999);
 
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1)
-  ];
+  return new Date(currentDate);
 };
+
+
+export const isTripExpired = (date) => {
+  const currentDate = getCurrentDate();
+
+  return moment(currentDate).isAfter(date);
+};
+
+export const isTripPlanned = (date) => {
+  const currentDate = getCurrentDate();
+
+  return moment(currentDate).isBefore(date);
+};
+
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);

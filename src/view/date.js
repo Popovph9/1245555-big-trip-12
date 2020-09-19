@@ -1,5 +1,5 @@
 import AbstractClass from "./abstract-class.js";
-import {sortTripsByDate} from "../utils/filters.js";
+import {sortTripsByDate} from "../utils/sorting.js";
 import {formatDateToHumanize} from "../utils/common.js";
 
 const getPeriodTemplate = (arr) => {
