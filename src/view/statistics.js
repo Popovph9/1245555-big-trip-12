@@ -292,7 +292,6 @@ export default class Statistics extends SmartClass {
   }
 
   _setCharts() {
-    // Нужно отрисовать три графика WIP
     if (this._moneyChart !== null || this._transportChart !== null) {
       this._moneyChart = null;
       this._transportChart = null;
