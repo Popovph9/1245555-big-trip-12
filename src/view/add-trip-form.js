@@ -244,7 +244,15 @@ export default class TripEditForm extends SmartClass {
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._removeDatepicker();
     this._setDatepicker();
+  }
+
+  _removeDatepicker() {
+    if (this._datepicker !== null) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   reset(trip) {
@@ -295,7 +303,7 @@ export default class TripEditForm extends SmartClass {
   }
 
   _setDatepicker() {
-    if (this._datepicker) {
+    if (this._datepicker !== null) {
       this._datepicker.destroy();
       this._datepicker = null;
     }
@@ -326,6 +334,15 @@ export default class TripEditForm extends SmartClass {
 
   removeElement() {
     super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
+  updateElement() {
+    super.updateElement();
 
     if (this._datepicker) {
       this._datepicker.destroy();
@@ -418,6 +435,7 @@ export default class TripEditForm extends SmartClass {
     this._setInnerHandlers();
     this.setCustomCloseButtonClickHandler(this._callback.editClose);
     this.setCustomSaveButtonClickHandler(this._callback.editSave);
+    this._removeDatepicker();
     this._setDatepicker();
     this.setFormDeleteClickHandler(this._callback.deleteClick);
   }

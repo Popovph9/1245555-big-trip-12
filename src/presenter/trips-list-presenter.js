@@ -50,6 +50,7 @@ export default class TripsListPresenter {
       this._renderPlaceholder();
       return;
     } else {
+      this._currentSortType = SortTypes.EVENT;
       this._renderFilters();
       this._renderTripsList();
     }
