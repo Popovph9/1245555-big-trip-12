@@ -1,5 +1,6 @@
 import {remove, render, RenderPosition, replace} from "../utils/render.js";
-import {FilterType, UpdateType, MenuItem} from "../const.js";
+import {FilterType, UpdateType, MenuItem, FilterName} from "../const.js";
+import {filter} from "../utils/filter.js";
 import RouteMenu from "../view/route-menu.js";
 import Route from "../view/route-template.js";
 import RouteFilters from "../view/route-filters.js";
@@ -104,7 +105,8 @@ export default class SiteMenuPresenter {
 
   _renderFilters() {
     if (this._filterComponent === null) {
-      this._filterComponent = new RouteFilters(this._currentFilterType);
+      const filters = this._getFilters();
+      this._filterComponent = new RouteFilters(filters, this._currentFilterType);
 
       this.routeFiltersContainer = this._routeContainer.querySelector(`.trip-main__trip-controls`);
 
@@ -116,6 +118,28 @@ export default class SiteMenuPresenter {
     } else {
       this._rerenderfilters();
     }
+  }
+
+  _getFilters() {
+    const trips = this._tripsModel.getTrips();
+
+    return [
+      {
+        type: FilterType.EVERYTHING,
+        name: FilterName.EVERYTHING,
+        count: filter[FilterType.EVERYTHING](trips).length
+      },
+      {
+        type: FilterType.FUTURE,
+        name: FilterName.FUTURE,
+        count: filter[FilterType.FUTURE](trips).length
+      },
+      {
+        type: FilterType.PAST,
+        name: FilterName.PAST,
+        count: filter[FilterType.PAST](trips).length
+      },
+    ];
   }
 
   _rerenderfilters() {
