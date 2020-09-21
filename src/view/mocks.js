@@ -19,8 +19,8 @@ const DESCRIPTIONS = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
   `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
   `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
 
-const DATE_FROM = [`2019-01-10T22:55:56.845Z`, `2019-02-10T22:00:00.845Z`, `2019-02-10T10:30:56.845Z`, `2019-03-10T01:15:56.845Z`];
-const DATE_TO = [`2019-08-09T11:22:13.375Z`, `2019-07-10T22:00:00.845Z`, `2019-07-10T10:30:56.845Z`, `2019-07-10T01:15:56.845Z`];
+const DATE_FROM = [`2019-01-10T22:55:56.845Z`, `2019-01-01T22:00:00.845Z`, `2019-01-05T10:30:56.845Z`, `2019-01-11T01:15:56.845Z`];
+const DATE_TO = [`2019-01-12T11:22:13.375Z`, `2019-01-20T22:00:00.845Z`, `2019-01-30T10:30:56.845Z`, `2019-01-25T01:15:56.845Z`];
 const PRICES = {
   min: 20,
   max: 500

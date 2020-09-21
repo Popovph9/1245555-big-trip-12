@@ -44,7 +44,8 @@ const getgetCreateOfferItemTemplate = (offers) => {
   `;
 };
 
-const getTripTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers}) => {
+const getTripTemplate = (trip) => {
+  const {type, destination, dateFrom, dateTo, basePrice, offers} = trip;
 
   const offerItemTemplate = getgetCreateOfferItemTemplate(offers);
   const duration = getDuration(dateFrom, dateTo);

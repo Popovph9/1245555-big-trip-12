@@ -12,3 +12,6 @@ export const sortTripsByPrice = (tripA, tripB) => {
 export const sortTripsByDate = (tripA, tripB) => {
   return moment(tripA.dateFrom) - moment(tripB.dateFrom);
 };
+
+export const makeItemsUniq = (items) => [...new Set(items)];
+

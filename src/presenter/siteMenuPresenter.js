@@ -1,5 +1,6 @@
 import {remove, render, RenderPosition, replace} from "../utils/render.js";
-import {FilterType, UpdateType, MenuItem} from "../const.js";
+import {FilterType, UpdateType, MenuItem, FilterName} from "../const.js";
+import {filter} from "../utils/filter.js";
 import RouteMenu from "../view/route-menu.js";
 import Route from "../view/route-template.js";
 import RouteFilters from "../view/route-filters.js";
@@ -14,7 +15,7 @@ export default class SiteMenuPresenter {
     this._newTripsListPresenter = tripsListPresenter;
     this._statisticsContainer = tripsContainer;
     this._addNewButtonComponent = addNewButton;
-    this._currentFilterType = null;
+    this._currentFilterType = FilterType.EVERYTHING;
 
     this._currentMenuValue = MenuItem.TABLE;
 
@@ -33,8 +34,6 @@ export default class SiteMenuPresenter {
   }
 
   init() {
-    this._currentFilterType = FilterType.EVERYTHING;
-
     this._renderSiteMenu();
     this._renderRoute();
     this._renderFilters();
@@ -52,6 +51,8 @@ export default class SiteMenuPresenter {
         this._addNewButtonComponent.disabled = false;
         this._renderTripsList();
         this._rerenderSiteMenu();
+        this._currentFilterType = FilterType.EVERYTHING;
+        this._renderFilters();
         break;
       case MenuItem.STATISTICS:
         if (this._tripsListPresenter !== null) {
@@ -103,18 +104,49 @@ export default class SiteMenuPresenter {
   }
 
   _renderFilters() {
-    if (this._filterComponent !== null) {
-      return;
+    if (this._filterComponent === null) {
+      const filters = this._getFilters();
+      this._filterComponent = new RouteFilters(filters, this._currentFilterType);
+
+      this.routeFiltersContainer = this._routeContainer.querySelector(`.trip-main__trip-controls`);
+
+      if (this.routeFiltersContainer) {
+        render(this.routeFiltersContainer, this._filterComponent, RenderPosition.BEFOREEND);
+
+        this._filterComponent.setFilterTypeChangeHandler(this._filterTypeChangeHandler);
+      }
+    } else {
+      this._rerenderfilters();
     }
+  }
 
-    this._filterComponent = new RouteFilters(this._currentFilterType);
+  _getFilters() {
+    const trips = this._tripsModel.getTrips();
 
-    this.routeFiltersContainer = this._routeContainer.querySelector(`.trip-main__trip-controls`);
+    return [
+      {
+        type: FilterType.EVERYTHING,
+        name: FilterName.EVERYTHING,
+        count: filter[FilterType.EVERYTHING](trips).length
+      },
+      {
+        type: FilterType.FUTURE,
+        name: FilterName.FUTURE,
+        count: filter[FilterType.FUTURE](trips).length
+      },
+      {
+        type: FilterType.PAST,
+        name: FilterName.PAST,
+        count: filter[FilterType.PAST](trips).length
+      },
+    ];
+  }
 
-    if (this.routeFiltersContainer) {
-      render(this.routeFiltersContainer, this._filterComponent, RenderPosition.BEFOREEND);
-
-      this._filterComponent.setFilterTypeChangeHandler(this._filterTypeChangeHandler);
+  _rerenderfilters() {
+    if (this._filterComponent !== null) {
+      remove(this._filterComponent);
+      this._filterComponent = null;
+      this._renderFilters();
     }
   }
 
@@ -137,7 +169,7 @@ export default class SiteMenuPresenter {
     if (this._statisticsComponent !== null) {
       return;
     }
-    this._statisticsComponent = new Statistics();
+    this._statisticsComponent = new Statistics(this._tripsModel.getTrips());
     render(this._statisticsContainer, this._statisticsComponent, RenderPosition.BEFOREEND);
   }
 

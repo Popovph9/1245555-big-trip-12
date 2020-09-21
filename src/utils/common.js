@@ -60,6 +60,13 @@ export const getDuration = (x, y) => {
   return moment.duration(y.diff(x));
 };
 
+
+export const getTripDurationH = (trip) => {
+  const x = moment(trip.dateTo);
+  const y = moment(trip.dateFrom);
+  return Math.ceil(x.diff(y, `hours`));
+};
+
 export const getCurrentDate = () => {
   const currentDate = new Date();
   currentDate.setHours(23, 59, 59, 999);
