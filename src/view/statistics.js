@@ -292,9 +292,10 @@ export default class Statistics extends SmartClass {
   }
 
   _setCharts() {
-    if (this._moneyChart !== null || this._transportChart !== null) {
+    if (this._moneyChart !== null || this._transportChart !== null || this._timeChart !== null) {
       this._moneyChart = null;
       this._transportChart = null;
+      this._timeChart = null;
     }
 
     const moneyCtx = this.getElement().querySelector(`.statistic__money`);
@@ -320,10 +321,8 @@ export default class Statistics extends SmartClass {
     transportCtx.height = BAR_HEIGHT * uniqActivityLength;
     timeSpendCtx.height = BAR_HEIGHT * uniqTypesLength;
 
-    if (moneyCtx && transportCtx) {
-      this._moneyChart = renderMoneyChart(moneyCtx, this._trips);
-      this._transportChart = renderTransportChart(transportCtx, this._trips);
-      this._timeChart = renderTimeChart(timeSpendCtx, this._trips);
-    }
+    this._moneyChart = renderMoneyChart(moneyCtx, this._trips);
+    this._transportChart = renderTransportChart(transportCtx, this._trips);
+    this._timeChart = renderTimeChart(timeSpendCtx, this._trips);
   }
 }

@@ -54,6 +54,10 @@ export const formatDateToString = (date) => {
   return moment(date).format(`YYYY-MM-DDTHH`);
 };
 
+export const formatDateToServer = (date) => {
+  return moment(date).format(`YYYY-MM-DDTHH:mm:SS.ZZ`);
+};
+
 export const getDuration = (x, y) => {
   x = moment(x);
   y = moment(y);
@@ -88,3 +92,13 @@ export const isTripPlanned = (date) => {
 };
 
 export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
+export const passGen = (len) => {
+  const chrs = `abdehkmnpswxzABDEFGHKMNPQRSTWXZ123456789`;
+  let str = ``;
+  for (let i = 0; i < len; i++) {
+    let pos = Math.floor(Math.random() * chrs.length);
+    str += chrs.substring(pos, pos + 1);
+  }
+  return str;
+};

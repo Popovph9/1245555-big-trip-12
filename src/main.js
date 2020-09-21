@@ -1,14 +1,15 @@
 
-import {generateTrip} from "./view/mocks.js";
+import {passGen} from "./utils/common.js";
+import {PASS_LENGTH, END_POINT, UpdateType} from "./const.js";
 import TripsModel from "./model/tripModel.js";
 import FilterModel from "./model/filterModel.js";
 import SiteMenuPresenter from "./presenter/siteMenuPresenter";
 import TripsListPresenter from "./presenter/trips-list-presenter.js";
+import Api from "./api.js";
 
+const authorization = `Basic ${passGen(PASS_LENGTH)}`;
 
-const TRIPS_COUNT = 5;
-
-const trips = new Array(TRIPS_COUNT).fill().map(generateTrip);
+const api = new Api(END_POINT, authorization);
 
 const routeContainer = document.querySelector(`.trip-main`);
 const tripsContainer = document.querySelector(`.trip-events`);
@@ -16,7 +17,6 @@ const tripsFiltersContainer = tripsContainer.querySelector(`h2`);
 const addNewButton = document.querySelector(`.trip-main__event-add-btn`);
 
 const tripsModel = new TripsModel();
-tripsModel.setTrips(trips);
 
 const filterModel = new FilterModel();
 
@@ -26,6 +26,12 @@ const siteMenuPresenter = new SiteMenuPresenter(routeContainer, tripsModel, filt
 siteMenuPresenter.init();
 tripsListPresenter.init();
 
+api.getTrips().then((trips) => {
+  tripsModel.setTrips(UpdateType.INIT, trips);
+})
+  .catch(() => {
+    tripsModel.setTrips(UpdateType.INIT, []);
+  });
 
 addNewButton.addEventListener(`click`, (evt) => {
   evt.preventDefault();

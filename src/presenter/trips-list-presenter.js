@@ -12,6 +12,7 @@ import SortModeMainContainer from "../view/sort-mode-main-container.js";
 import BlankListElement from "../view/blank-list.js";
 import BlanckDateBlock from "../view/blanck-date.js";
 import SortModeTripsListContainer from "../view/sort-mode-tripsList-container.js";
+import Loading from "../view/loading.js";
 
 export default class TripsListPresenter {
   constructor(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton) {
@@ -21,15 +22,17 @@ export default class TripsListPresenter {
     this._addNewButton = addNewButton;
     this._tripsModel = tripsModel;
     this._filterModel = filterModel;
+    this._isLoading = true;
 
     this._currentSortType = SortTypes.EVENT;
 
     this._filtersComponent = null;
     this._placeholderComponent = new NoTripPlaceholder();
     this._sortContainerComponent = new SortModeMainContainer();
-    this._sortModeTripsContainer = new SortModeTripsListContainer();
+    this._sortModeTripsContainer = null;
     this._sortModeBlanckListComponent = new BlankListElement();
     this._blanckDateBlockConponent = new BlanckDateBlock();
+    this._loadingComponent = new Loading();
 
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -40,11 +43,25 @@ export default class TripsListPresenter {
   }
 
   init() {
+    this._tripsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
+    this._renderBoard();
+  }
+
+  _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     this._mainContentComponent = new Date(this._getTrips());
 
     if (this._tripsModel.getTrips().length === 0) {
       if (this._filtersComponent !== null) {
         this._removeFiters();
+
+
       }
 
       this._renderPlaceholder();
@@ -53,11 +70,12 @@ export default class TripsListPresenter {
       this._currentSortType = SortTypes.EVENT;
       this._renderFilters();
       this._renderTripsList();
-    }
 
-    this._tripsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
+      this._tripsModel.addObserver(this._handleModelEvent);
+      this._filterModel.addObserver(this._handleModelEvent);
+    }
   }
+
 
   destroy() {
     this._clearTripsList();
@@ -99,6 +117,9 @@ export default class TripsListPresenter {
       this._clearTripsList();
       this._renderFilters();
       this._renderTripsList();
+      if (this._sortContainerComponent) {
+        remove(this._sortContainerComponent);
+      }
       return;
     }
 
@@ -148,7 +169,16 @@ export default class TripsListPresenter {
         this._clearTripsList();
         this.init();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this.init();
+        break;
     }
+  }
+
+  _renderLoading() {
+    render(this._tripsFiltersContainer, this._loadingComponent, RenderPosition.AFTER);
   }
 
   _renderSortContainerComponent() {
@@ -164,7 +194,20 @@ export default class TripsListPresenter {
   }
 
   _renderSortModeTripsContainer() {
-    render(this._sortModeBlanckListComponent, this._sortModeTripsContainer, RenderPosition.BEFOREEND);
+    if (this._sortModeTripsContainer === null) {
+      this._sortModeTripsContainer = new SortModeTripsListContainer();
+      render(this._sortModeBlanckListComponent, this._sortModeTripsContainer, RenderPosition.BEFOREEND);
+    } else {
+      this._rerenderSortModeTripsContainer();
+    }
+  }
+
+  _rerenderSortModeTripsContainer() {
+    if (this._sortModeTripsContainer !== null) {
+      remove(this._sortModeTripsContainer);
+      this._sortModeTripsContainer = null;
+      this._renderSortModeTripsContainer();
+    }
   }
 
   _renderFilters() {
@@ -187,9 +230,8 @@ export default class TripsListPresenter {
 
   _clearTripsList() {
     this._addNewTaskPresenter.destroy();
-    this._mainContentComponent.getElement().innerHTML = ``;
-    this._mainContentComponent.removeElement();
-
+    remove(this._mainContentComponent);
+    remove(this._sortModeTripsContainer);
     Object.values(this._tripPesenter).forEach((presenter) => presenter.destroy());
     this._tripPesenter = {};
   }

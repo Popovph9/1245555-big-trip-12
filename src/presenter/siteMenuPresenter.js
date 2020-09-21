@@ -170,7 +170,7 @@ export default class SiteMenuPresenter {
       return;
     }
     this._statisticsComponent = new Statistics(this._tripsModel.getTrips());
-    render(this._statisticsContainer, this._statisticsComponent, RenderPosition.BEFOREEND);
+    render(this._statisticsContainer, this._statisticsComponent, RenderPosition.AFTER);
   }
 
   _removeStatistics() {

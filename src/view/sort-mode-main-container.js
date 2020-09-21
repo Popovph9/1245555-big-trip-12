@@ -2,7 +2,7 @@ import AbstractClass from "./abstract-class.js";
 
 const getMainContainerTemplate = () => {
   return (
-    `<ul class="trip-days">
+    `<ul class="trip-days red">
     </ul>`
   );
 };

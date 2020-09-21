@@ -27,7 +27,8 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 export const FilterType = {
@@ -46,3 +47,7 @@ export const MenuItem = {
   TABLE: `Table`,
   STATISTICS: `Stats`
 };
+
+export const PASS_LENGTH = 6;
+
+export const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
