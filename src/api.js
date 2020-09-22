@@ -64,4 +64,14 @@ export default class Api {
       headers: new Headers({"Content-Type": `application/json`})
     }).then(Api.toJSON).then(TripsModel.adaptToClient);
   }
+
+  getDestinations() {
+    return this._load({url: `destinations`})
+      .then(Api.toJSON);
+  }
+
+  getOffers() {
+    return this._load({url: `offers`})
+      .then(Api.toJSON);
+  }
 }

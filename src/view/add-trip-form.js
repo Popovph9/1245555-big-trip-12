@@ -5,6 +5,7 @@ import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import he from "he";
 
+const BlancDest = DESTINATION;
 const OffersName = {
   ADD_LUGGAGE: `Add luggage`,
   TRAVEL_BY_TRAIN: `Travel by train`,
@@ -24,22 +25,37 @@ const ResetPlaceholder = {
   CANCEL: `Cancel`
 };
 
-const BlancTrip = {
-  type: TRANSFER_TYPES[0],
-  destination: {
-    description: ``,
-    name: ``,
-    pictures: [
-      {
-        src: [],
-        description: ``,
-      }
-    ],
-  },
+const BlanckDestination = {
+  description: ``,
+  name: `Chamonix`,
+  pictures: [
+    {
+      src: `http://picsum.photos/300/200?r=0.0762563005163317`,
+      description: `Chamonix parliament building`
+    }
+  ]
+};
+
+const BlanckOffer = {
+  type: [`taxi`],
+  offers: [
+    {
+      title: `Upgrade to a business class`,
+      price: 120
+    }, {
+      title: `Choose the radio station`,
+      price: 60
+    }
+  ]
+};
+
+let BlancTrip = {
+  type: BlanckOffer.type,
+  destination: BlanckDestination,
   dateFrom: ``,
   dateTo: ``,
   basePrice: 0,
-  offers: [],
+  offers: BlanckOffer.offers,
 };
 
 const getCreateChooseTransferTypeTemplate = (it) => {
@@ -67,7 +83,7 @@ const getCreateChooseActivityTypeTemplate = (it) => {
 };
 
 const getCreateChooseDestinationTemplate = (arr) => {
-  return arr.map((it) => `<option value="${it}">${it}</option>`);
+  return arr.map((it) => `<option value="${it.name}">${it.name}</option>`);
 };
 
 const getClassName = (offer) => {
@@ -105,7 +121,8 @@ const getCreatePhotoTemplate = (arr) => {
   return arr.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join(``);
 };
 
-const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, basePrice, isFavorite, isOffers, isDescription, isPhoto, isNew}) => {
+const getEditTripTemplate = (trips, destinations) => {
+  const {type, destination, offers, dateFrom, dateTo, basePrice, isFavorite, isOffers, isDescription, isPhoto, isNew} = trips;
 
   const getSubb = () => {
     let subb = Preposition.TO;
@@ -119,7 +136,7 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
 
   const transferTypeTemplate = getCreateChooseTransferTypeTemplate(type);
   const activityTypeTemplate = getCreateChooseActivityTypeTemplate(type);
-  const destinationTemplate = getCreateChooseDestinationTemplate(DESTINATION);
+  const destinationTemplate = getCreateChooseDestinationTemplate(destinations);
   const offersTemplate = getCreateChooseOffersTemplate(offers);
   const photoTemplate = getCreatePhotoTemplate(destination.pictures);
 
@@ -129,7 +146,7 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -152,7 +169,7 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type} ${getSubb()}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"  value="${he.encode(destination.name)}" list="destination-list-1" autocomplete="off" required>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"  value="${he.encode(destination.name)}" list="destination-list-1" required>
           <datalist id="destination-list-1">
             ${destinationTemplate}
           </datalist>
@@ -227,13 +244,16 @@ const getEditTripTemplate = ({type, destination, offers, dateFrom, dateTo, baseP
 };
 
 export default class TripEditForm extends SmartClass {
-  constructor(trips = BlancTrip) {
+  constructor(trips = BlancTrip, destination = BlancDest) {
     super();
 
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
     this._trips = trips;
+    this._destinations = destination;
+    this._uniqTypes = null;
+
     this._data = TripEditForm.parseTripToData(trips);
     this._customSaveButtonClickHandler = this._customSaveButtonClickHandler.bind(this);
     this._customCloseButtonClickHandler = this._customCloseButtonClickHandler.bind(this);
@@ -248,6 +268,10 @@ export default class TripEditForm extends SmartClass {
 
     this._setDatepickerTo();
     this._setDatepickerFrom();
+  }
+
+  setDestinations(destinations) {
+    this._destinations = destinations;
   }
 
   reset(trip) {
@@ -409,7 +433,7 @@ export default class TripEditForm extends SmartClass {
   }
 
   getTemplate() {
-    return getEditTripTemplate(this._data);
+    return getEditTripTemplate(this._data, this._destinations);
   }
 
   static parseTripToData(trip) {

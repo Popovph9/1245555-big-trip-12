@@ -9,10 +9,11 @@ const Mode = {
 };
 
 export default class TripPesenter {
-  constructor(tripContainer, changeMode, changeData) {
+  constructor(tripContainer, changeMode, changeData, destinationsModel) {
     this._tripContainer = tripContainer;
     this._changeMode = changeMode;
     this._changeData = changeData;
+    this.destinationsModel = destinationsModel;
 
     this._tripComponent = null;
     this._tripEditComponent = null;
@@ -32,8 +33,10 @@ export default class TripPesenter {
     const prevTripComponent = this._tripComponent;
     const prevTripEditComponent = this._tripEditComponent;
 
+    const destinations = this.destinationsModel.getDestinations();
+
     this._tripComponent = new Trip(trip);
-    this._tripEditComponent = new TripEditForm(trip);
+    this._tripEditComponent = new TripEditForm(trip, destinations);
 
     this._tripComponent.setCustomClickHandler(this._handleEditClick);
     this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);

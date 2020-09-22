@@ -4,7 +4,8 @@ import {generateId} from "../utils/common.js";
 import TripEditForm from "../view/add-trip-form.js";
 
 export default class AddNewTripPesenter {
-  constructor(tripContainer, changeData, addNewButton) {
+  constructor(tripContainer, changeData, addNewButton, destinationsModel) {
+    this.destinationsModel = destinationsModel;
     this._tripContainer = tripContainer;
     this._changeData = changeData;
     this._addNewButtonComponent = addNewButton;
@@ -17,6 +18,7 @@ export default class AddNewTripPesenter {
   }
 
   init() {
+
     if (this._tripEditComponent !== null) {
       this._tripEditComponent = null;
     }

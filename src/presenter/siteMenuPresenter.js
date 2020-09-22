@@ -65,6 +65,10 @@ export default class SiteMenuPresenter {
     }
   }
 
+  setCurrentFilterType(filterType) {
+    this._currentFilterType = filterType;
+  }
+
   _renderSiteMenu() {
     if (this._siteMenu === null) {
       this._siteMenuContainer = this._routeContainer.querySelector(`h2`);
