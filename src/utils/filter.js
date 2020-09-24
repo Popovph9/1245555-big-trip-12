@@ -6,3 +6,24 @@ export const filter = {
   [FilterType.FUTURE]: (trips) => trips.filter((trip) => isTripPlanned(trip.dateTo)),
   [FilterType.PAST]: (trips) => trips.filter((trip) => isTripExpired(trip.dateTo)),
 };
+
+export const getTypes = (arr) => {
+  return arr.map((it) => it.type);
+};
+
+export const getCurrentTypes = (arr, types) => {
+  const newArr = [];
+  for (let i = 0; i < types.length; i++) {
+    const newItem = arr.filter((it) => it === types[i].toLowerCase());
+    newArr.push(...newItem);
+  }
+  return newArr;
+};
+
+export const getElemntOfCurrentType = (arr, type) => {
+  return arr.filter((it) => it.type === type);
+};
+
+export const getElemntOfCurrentName = (arr, name) => {
+  return arr.filter((it) => it.name === name);
+};

@@ -102,3 +102,26 @@ export const passGen = (len) => {
   }
   return str;
 };
+
+
+export const getUpperLetter = (str) => {
+  if (!str) {
+    return str;
+  }
+
+  return str[0].toUpperCase() + str.slice(1);
+};
+
+export const flatten = (arr) => {
+  return [].concat(...arr);
+};
+
+export const createObjcts = (keys, value) => {
+  let obj = {};
+  for (let i = 0; i < keys.length; i++) {
+    let key = keys[i];
+
+    obj[key] = value;
+  }
+  return obj;
+};

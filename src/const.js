@@ -7,9 +7,9 @@ export const Preposition = {
 };
 
 export const Activity = {
-  CHECK: `Check-in`,
-  SIGHT: `Sightseeing`,
-  REST: `Restaurant`
+  CHECK: `check-in`,
+  SIGHT: `sightseeing`,
+  REST: `restaurant`
 };
 
 export const SortTypes = {

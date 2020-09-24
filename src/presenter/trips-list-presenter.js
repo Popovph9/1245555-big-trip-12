@@ -72,7 +72,6 @@ export default class TripsListPresenter {
     this._renderTripsList();
   }
 
-
   destroy() {
     this._clearTripsList();
 
@@ -163,7 +162,7 @@ export default class TripsListPresenter {
       case UpdateType.MAJOR:
         this._currentSortType = SortTypes.EVENT;
         this._clearTripsList();
-        this.init();
+        this._renderBoard();
         break;
       case UpdateType.INIT:
         this._isLoading = false;

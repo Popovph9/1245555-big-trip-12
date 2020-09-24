@@ -33,10 +33,11 @@ export default class TripPesenter {
     const prevTripComponent = this._tripComponent;
     const prevTripEditComponent = this._tripEditComponent;
 
-    const destinations = this.destinationsModel.getDestinations();
-
     this._tripComponent = new Trip(trip);
-    this._tripEditComponent = new TripEditForm(trip, destinations);
+
+    const destinations = this.destinationsModel.getDestinations();
+    const offers = this.destinationsModel.getOffers();
+    this._tripEditComponent = new TripEditForm(offers, destinations, trip);
 
     this._tripComponent.setCustomClickHandler(this._handleEditClick);
     this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);

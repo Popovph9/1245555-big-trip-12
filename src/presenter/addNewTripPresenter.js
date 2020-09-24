@@ -18,14 +18,14 @@ export default class AddNewTripPesenter {
   }
 
   init() {
-
     if (this._tripEditComponent !== null) {
       this._tripEditComponent = null;
     }
 
     this._addNewButtonComponent.disabled = true;
-
-    this._tripEditComponent = new TripEditForm();
+    const offers = this.destinationsModel.getOffers();
+    const distinations = this.destinationsModel.getDestinations();
+    this._tripEditComponent = new TripEditForm(offers, distinations);
 
     this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);
     this._tripEditComponent.setFormDeleteClickHandler(this._handleDeleteClick);
@@ -51,7 +51,6 @@ export default class AddNewTripPesenter {
   _escKeydownHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
-
       this.destroy();
     }
   }
