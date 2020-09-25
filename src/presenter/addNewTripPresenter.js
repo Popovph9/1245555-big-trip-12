@@ -1,6 +1,5 @@
 import {UpdateType, UserAction} from "../const.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
-import {generateId} from "../utils/common.js";
 import TripEditForm from "../view/add-trip-form.js";
 
 export default class AddNewTripPesenter {
@@ -39,9 +38,27 @@ export default class AddNewTripPesenter {
     this._changeData(
         UserAction.ADD_TASK,
         UpdateType.MAJOR,
-        Object.assign({id: generateId()}, trip)
+        trip
     );
-    this.destroy();
+  }
+
+  setSaving() {
+    this._tripEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._tripEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._taskEditComponent.shake(resetFormState);
   }
 
   _handleDeleteClick() {

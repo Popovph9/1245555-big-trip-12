@@ -21,7 +21,7 @@ const tripsModel = new TripsModel();
 const destinationsModel = new DestinationsModel();
 const filterModel = new FilterModel();
 
-const tripsListPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton, destinationsModel);
+const tripsListPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton, destinationsModel, api);
 const siteMenuPresenter = new SiteMenuPresenter(routeContainer, tripsModel, filterModel, tripsListPresenter, tripsContainer, addNewButton);
 tripsListPresenter.setSiteMenuPresenter(siteMenuPresenter);
 
@@ -42,8 +42,14 @@ tripsListPresenter.init();
 
 api.getDestinations().then((destinations) => {
   destinationsModel.setDestinations(UpdateType.MAJOR, destinations);
+})
+.catch(() => {
+  destinationsModel.setDestinations(UpdateType.MAJOR, []);
 });
 
 api.getOffers().then((offers) => {
   destinationsModel.setOffers(UpdateType.MAJOR, offers);
+})
+.catch(() => {
+  destinationsModel.setOffers(UpdateType.MAJOR, []);
 });

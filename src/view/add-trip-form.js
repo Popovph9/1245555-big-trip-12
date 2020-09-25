@@ -1,4 +1,4 @@
-import {TRANSFER_TYPES, ACTIVITY_TYPES, Preposition, Activity, DESTINATION} from "../const.js";
+import {TRANSFER_TYPES, ACTIVITY_TYPES, Preposition, Activity} from "../const.js";
 import {getUpperLetter, flatten} from "../utils/common.js";
 import {getTypes, getCurrentTypes, getElemntOfCurrentType, getElemntOfCurrentName} from "../utils/filter.js";
 import SmartClass from "./smart-class.js";
@@ -7,12 +7,11 @@ import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import he from "he";
 
-const BlancDest = DESTINATION;
-
 const CLASS_EXSEPTION = `class`;
 
 const ResetPlaceholder = {
   DELETE: `Delete`,
+  DELETING: `Deleting…`,
   CANCEL: `Cancel`
 };
 
@@ -39,6 +38,19 @@ const BlancTrip = {
   dateTo: ``,
   basePrice: ``,
   offers: BlanckOffer.offers,
+  isFavorite: false,
+  isDisabled: false,
+  isSaving: false,
+  isDeleting: false
+};
+
+const getResetButtonTemplate = (isNew, isDeleting, isDisabled) => {
+  if (isNew) {
+    return (`<button class="event__reset-btn" ${isDisabled ? `disabled` : ``} type="reset">${isDeleting ? ResetPlaceholder.DELETING : ResetPlaceholder.CANCEL}</button>`);
+  }
+
+
+  return (`<button class="event__reset-btn" ${isDisabled ? `disabled` : ``} type="reset">${isDeleting ? ResetPlaceholder.DELETING : ResetPlaceholder.DELETE}</button>`);
 };
 
 const getCreateChooseTransferTypeTemplate = (it, arr) => {
@@ -78,7 +90,7 @@ const getClassName = (offer) => {
   return title;
 };
 
-const getCreateChooseOffersTemplate = (arr, type, tripOffers, isEdit) => {
+const getCreateChooseOffersTemplate = (arr, type, tripOffers, isEdit, isDisabled) => {
   if (isEdit) {
     const offersOfChoosenType = getElemntOfCurrentType(tripOffers, type);
     const currentOffers = offersOfChoosenType.map((offer) => offer.offers);
@@ -86,7 +98,7 @@ const getCreateChooseOffersTemplate = (arr, type, tripOffers, isEdit) => {
     return mergedOffers.map((offer) => `
     <div class="event__offer-selector">
 
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${getClassName(offer)}-1" type="checkbox" name="event-offer-${getClassName(offer)}">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${getClassName(offer)}-1" type="checkbox" ${isDisabled ? `disabled` : ``} name="event-offer-${getClassName(offer)}">
 
       <label class="event__offer-label" for="event-offer-${getClassName(offer)}-1">
         <span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
@@ -99,7 +111,7 @@ const getCreateChooseOffersTemplate = (arr, type, tripOffers, isEdit) => {
   return arr.map((offer) => `
     <div class="event__offer-selector">
 
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${getClassName(offer)}-1" type="checkbox"  name="event-offer-${getClassName(offer)}">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${getClassName(offer)}-1" type="checkbox" ${isDisabled ? `disabled` : ``}  name="event-offer-${getClassName(offer)}">
 
       <label class="event__offer-label" for="event-offer-${getClassName(offer)}-1">
         <span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
@@ -134,7 +146,7 @@ const getCreateDescriptionTemplate = (it, name, destinations, isEdit) => {
 };
 
 const getEditTripTemplate = (tripOffers, destinations, trips) => {
-  const {type, destination, offers, dateFrom, dateTo, basePrice, isFavorite, isPhoto, isNew, isEdit} = trips;
+  const {type, destination, offers, dateFrom, dateTo, basePrice, isFavorite, isPhoto, isNew, isEdit, isDisabled, isSaving, isDeleting} = trips;
   const getSubb = () => {
     let subb = Preposition.TO;
 
@@ -151,9 +163,10 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
   const transferTypeTemplate = getCreateChooseTransferTypeTemplate(type, actualTransportTypes);
   const activityTypeTemplate = getCreateChooseActivityTypeTemplate(type, actualActivityTypes);
   const destinationTemplate = getCreateChooseDestinationTemplate(destinations);
-  const offersTemplate = getCreateChooseOffersTemplate(offers, type, tripOffers, isEdit);
+  const offersTemplate = getCreateChooseOffersTemplate(offers, type, tripOffers, isEdit, isDisabled);
   const photoTemplate = getCreatePhotoTemplate(destination.pictures, destination.name, destinations, isEdit);
   const descriptionTemplate = getCreateDescriptionTemplate(destination, destination.name, destinations, isEdit);
+  const resetButtonTemplate = getResetButtonTemplate(isNew, isDeleting, isDisabled);
 
   let offersTemplateTriger = false;
   if (offersTemplate) {
@@ -173,7 +186,7 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle visually-hidden" ${isDisabled ? `disabled` : ``} id="event-type-toggle-1" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -194,7 +207,7 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${getUpperLetter(type)} ${getSubb()}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" autocomplete="off" value="${he.encode(destination.name)}" list="destination-list-1" required>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" autocomplete="off" value="${he.encode(destination.name)}" list="destination-list-1"  ${isDisabled ? `disabled` : ``} required>
             <datalist id="destination-list-1">
               ${destinationTemplate}
             </datalist>
@@ -204,12 +217,12 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}" required>
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}" ${isDisabled ? `disabled` : ``} required>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}" required>
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}" ${isDisabled ? `disabled` : ``} required>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -217,12 +230,12 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" autocomplete=OFF onkeyup="this.value = !isNaN(parseInt(this.value)) ? parseInt(this.value) : ''" name="event-price" value="${basePrice}" required>
+          <input class="event__input  event__input--price" id="event-price-1" type="text" autocomplete=OFF onkeyup="this.value = !isNaN(parseInt(this.value)) ? parseInt(this.value) : ''" name="event-price" value="${basePrice}" ${isDisabled ? `disabled` : ``} required>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        <button class="event__save-btn  btn  btn--blue" ${isDisabled ? `disabled` : ``}  type="submit">${isSaving ? `Saving...` : `Save`}</button>
 
-        <button class="event__reset-btn" type="reset">${isNew ? ResetPlaceholder.CANCEL : ResetPlaceholder.DELETE}</button>
+        ${resetButtonTemplate}
 
         ${isNew ? `` : `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
@@ -276,7 +289,7 @@ export default class TripEditForm extends SmartClass {
     this._datepickerTo = null;
 
     this._tripOffers = tripOffers || BlanckOffer;
-    this._destinations = destination || BlancDest;
+    this._destinations = destination || BlanckDestination;
     this._uniqTypes = null;
 
     this._data = TripEditForm.parseTripToData(trips);
@@ -532,6 +545,9 @@ export default class TripEditForm extends SmartClass {
           isEdit: false,
           isNew: !trip.id,
           isPhoto: trip.destination.pictures.length !== 0,
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false
         });
   }
 
@@ -548,6 +564,9 @@ export default class TripEditForm extends SmartClass {
     delete data.isOffers;
     delete data.isDescription;
     delete data.isPhoto;
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
 
     return data;
   }

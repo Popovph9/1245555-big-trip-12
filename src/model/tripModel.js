@@ -1,5 +1,5 @@
 import Observer from "../utils/observer.js";
-import {formatDateToServer} from "../utils/common.js";
+import moment from "moment";
 
 export default class TripsModel extends Observer {
   constructor() {
@@ -19,7 +19,6 @@ export default class TripsModel extends Observer {
 
   updateTrip(updateType, update) {
     const index = this._trips.findIndex((trip) => trip.id === update.id);
-
     if (index === -1) {
       throw new Error(`Can't update unexisting trip`);
     }
@@ -82,8 +81,8 @@ export default class TripsModel extends Observer {
         {},
         trip,
         {
-          "date_from": formatDateToServer(trip.dateFrom),
-          "date_to": formatDateToServer(trip.dateTo),
+          "date_from": moment(trip.dateFrom).toISOString(),
+          "date_to": moment(trip.dateTo).toISOString(),
           "is_favorite": trip.isFavorite,
           "base_price": trip.basePrice
         }
