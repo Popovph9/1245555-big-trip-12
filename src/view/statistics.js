@@ -4,9 +4,10 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {makeItemsUniq} from "../utils/sorting.js";
 import {TRANSFER_TYPES} from "../const.js";
 import {getTripDurationH} from "../utils/common.js";
+import {getTypes, getCurrentTypes} from "../utils/filter.js";
 
 const renderMoneyChart = (moneyCtx, trips) => {
-  const tripsTypes = trips.map((trip) => trip.type);
+  const tripsTypes = getTypes(trips);
   const uniqTypes = makeItemsUniq(tripsTypes);
 
   const getCostsOfUniqTypes = (arr) => {
@@ -88,19 +89,9 @@ const renderMoneyChart = (moneyCtx, trips) => {
 };
 
 const renderTransportChart = (transportCtx, trips) => {
-  const tripsTypes = trips.map((trip) => trip.type);
-
-  const getActivity = () => {
-    const newArr = [];
-    for (let i = 0; i < TRANSFER_TYPES.length; i++) {
-      const newItem = tripsTypes.filter((it) => it === TRANSFER_TYPES[i]);
-      newArr.push(...newItem);
-    }
-    return newArr;
-  };
-
-  const uniqActivity = makeItemsUniq(getActivity());
-
+  const tripsTypes = getTypes(trips);
+  const activity = getCurrentTypes(tripsTypes, TRANSFER_TYPES);
+  const uniqActivity = makeItemsUniq(activity);
   const getTripsLength = (arr, type) => {
     return arr.filter((it) => it.type === type).length;
   };
@@ -174,7 +165,7 @@ const renderTransportChart = (transportCtx, trips) => {
 };
 
 const renderTimeChart = (timeSpendCtx, trips) => {
-  const tripsTypes = trips.map((trip) => trip.type);
+  const tripsTypes = getTypes(trips);
   const uniqTypes = makeItemsUniq(tripsTypes);
 
   const getDurationOfUniqTypes = (arr) => {
@@ -301,7 +292,7 @@ export default class Statistics extends SmartClass {
     const transportCtx = this.getElement().querySelector(`.statistic__transport`);
     const timeSpendCtx = this.getElement().querySelector(`.statistic__time-spend`);
 
-    const tripsTypes = this._trips.map((trip) => trip.type);
+    const tripsTypes = getTypes(this._trips);
     const uniqTypesLength = makeItemsUniq(tripsTypes).length;
 
     const getActivity = () => {

@@ -4,7 +4,8 @@ import {generateId} from "../utils/common.js";
 import TripEditForm from "../view/add-trip-form.js";
 
 export default class AddNewTripPesenter {
-  constructor(tripContainer, changeData, addNewButton) {
+  constructor(tripContainer, changeData, addNewButton, destinationsModel) {
+    this.destinationsModel = destinationsModel;
     this._tripContainer = tripContainer;
     this._changeData = changeData;
     this._addNewButtonComponent = addNewButton;
@@ -22,8 +23,9 @@ export default class AddNewTripPesenter {
     }
 
     this._addNewButtonComponent.disabled = true;
-
-    this._tripEditComponent = new TripEditForm();
+    const offers = this.destinationsModel.getOffers();
+    const destinations = this.destinationsModel.getDestinations();
+    this._tripEditComponent = new TripEditForm(offers, destinations);
 
     this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);
     this._tripEditComponent.setFormDeleteClickHandler(this._handleDeleteClick);
@@ -49,7 +51,6 @@ export default class AddNewTripPesenter {
   _escKeydownHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
-
       this.destroy();
     }
   }

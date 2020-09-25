@@ -65,6 +65,10 @@ export default class SiteMenuPresenter {
     }
   }
 
+  setCurrentFilterType(filterType) {
+    this._currentFilterType = filterType;
+  }
+
   _renderSiteMenu() {
     if (this._siteMenu === null) {
       this._siteMenuContainer = this._routeContainer.querySelector(`h2`);
@@ -170,7 +174,7 @@ export default class SiteMenuPresenter {
       return;
     }
     this._statisticsComponent = new Statistics(this._tripsModel.getTrips());
-    render(this._statisticsContainer, this._statisticsComponent, RenderPosition.BEFOREEND);
+    render(this._statisticsContainer, this._statisticsComponent, RenderPosition.AFTER);
   }
 
   _removeStatistics() {

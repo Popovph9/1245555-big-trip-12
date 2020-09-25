@@ -12,35 +12,52 @@ import SortModeMainContainer from "../view/sort-mode-main-container.js";
 import BlankListElement from "../view/blank-list.js";
 import BlanckDateBlock from "../view/blanck-date.js";
 import SortModeTripsListContainer from "../view/sort-mode-tripsList-container.js";
+import Loading from "../view/loading.js";
 
 export default class TripsListPresenter {
-  constructor(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton) {
+  constructor(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton, destinationsModel) {
     this._tripPesenter = {};
     this._tripsContainer = tripsContainer;
     this._tripsFiltersContainer = tripsFiltersContainer;
     this._addNewButton = addNewButton;
     this._tripsModel = tripsModel;
     this._filterModel = filterModel;
+    this._destinationsModel = destinationsModel;
+    this._isLoading = true;
 
     this._currentSortType = SortTypes.EVENT;
 
     this._filtersComponent = null;
+    this._mainContentComponent = null;
     this._placeholderComponent = new NoTripPlaceholder();
     this._sortContainerComponent = new SortModeMainContainer();
-    this._sortModeTripsContainer = new SortModeTripsListContainer();
+    this._sortModeTripsContainer = null;
     this._sortModeBlanckListComponent = new BlankListElement();
     this._blanckDateBlockConponent = new BlanckDateBlock();
+    this._loadingComponent = new Loading();
+    this._siteMenuPresenter = null;
 
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
 
-    this._addNewTaskPresenter = new AddNewTripPesenter(this._tripsContainer, this._handleViewAction, this._addNewButton);
+    this._addNewTaskPresenter = new AddNewTripPesenter(this._tripsContainer, this._handleViewAction, this._addNewButton, destinationsModel);
   }
 
   init() {
-    this._mainContentComponent = new Date(this._getTrips());
+    this._renderBoard();
+
+    this._tripsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+    this._destinationsModel.addObserver(this._handleModelEvent);
+  }
+
+  _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
 
     if (this._tripsModel.getTrips().length === 0) {
       if (this._filtersComponent !== null) {
@@ -49,14 +66,10 @@ export default class TripsListPresenter {
 
       this._renderPlaceholder();
       return;
-    } else {
-      this._currentSortType = SortTypes.EVENT;
-      this._renderFilters();
-      this._renderTripsList();
     }
-
-    this._tripsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
+    this._currentSortType = SortTypes.EVENT;
+    this._renderFilters();
+    this._renderTripsList();
   }
 
   destroy() {
@@ -99,6 +112,9 @@ export default class TripsListPresenter {
       this._clearTripsList();
       this._renderFilters();
       this._renderTripsList();
+      if (this._sortContainerComponent) {
+        remove(this._sortContainerComponent);
+      }
       return;
     }
 
@@ -146,9 +162,18 @@ export default class TripsListPresenter {
       case UpdateType.MAJOR:
         this._currentSortType = SortTypes.EVENT;
         this._clearTripsList();
+        this._renderBoard();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this.init();
         break;
     }
+  }
+
+  _renderLoading() {
+    render(this._tripsFiltersContainer, this._loadingComponent, RenderPosition.AFTER);
   }
 
   _renderSortContainerComponent() {
@@ -164,7 +189,20 @@ export default class TripsListPresenter {
   }
 
   _renderSortModeTripsContainer() {
-    render(this._sortModeBlanckListComponent, this._sortModeTripsContainer, RenderPosition.BEFOREEND);
+    if (this._sortModeTripsContainer === null) {
+      this._sortModeTripsContainer = new SortModeTripsListContainer();
+      render(this._sortModeBlanckListComponent, this._sortModeTripsContainer, RenderPosition.BEFOREEND);
+    } else {
+      this._rerenderSortModeTripsContainer();
+    }
+  }
+
+  _rerenderSortModeTripsContainer() {
+    if (this._sortModeTripsContainer !== null) {
+      remove(this._sortModeTripsContainer);
+      this._sortModeTripsContainer = null;
+      this._renderSortModeTripsContainer();
+    }
   }
 
   _renderFilters() {
@@ -187,15 +225,25 @@ export default class TripsListPresenter {
 
   _clearTripsList() {
     this._addNewTaskPresenter.destroy();
-    this._mainContentComponent.getElement().innerHTML = ``;
-    this._mainContentComponent.removeElement();
-
+    this._removeMainComponent();
+    remove(this._sortModeTripsContainer);
     Object.values(this._tripPesenter).forEach((presenter) => presenter.destroy());
     this._tripPesenter = {};
   }
 
   _renderMainContentComponent() {
-    render(this._tripsContainer, this._mainContentComponent, RenderPosition.BEFOREEND);
+    if (this._mainContentComponent === null) {
+      this._mainContentComponent = new Date(this._getTrips());
+
+      render(this._tripsContainer, this._mainContentComponent, RenderPosition.BEFOREEND);
+    }
+  }
+
+  _removeMainComponent() {
+    if (this._mainContentComponent !== null) {
+      remove(this._mainContentComponent);
+      this._mainContentComponent = null;
+    }
   }
 
   createNewTrip() {
@@ -206,19 +254,29 @@ export default class TripsListPresenter {
     }
 
     this._handleSortTypeChange();
+    this._siteMenuPresenter.setCurrentFilterType(FilterType.EVERYTHING);
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._currentSortType = SortTypes.EVENT;
     this._addNewTaskPresenter.init();
     Object.values(this._tripPesenter).forEach((presenter) => presenter.resetView());
   }
 
+  setSiteMenuPresenter(siteMenuPresenter) {
+    this._siteMenuPresenter = siteMenuPresenter;
+  }
+
   _renderCard(tripListElement, trip) {
-    const tripPesenter = new TripPesenter(tripListElement, this._handleModeChange, this._handleViewAction);
+    const tripPesenter = new TripPesenter(tripListElement, this._handleModeChange, this._handleViewAction, this._destinationsModel);
     tripPesenter.init(trip);
     this._tripPesenter[trip.id] = tripPesenter;
   }
 
   _renderCards() {
+    if (this._mainContentComponent !== null) {
+      Object.values(this._tripPesenter).forEach((presenter) => presenter.destroy());
+      this._tripPesenter = {};
+    }
+
     const dateFields = this._mainContentComponent.getElement().querySelectorAll(`.day__date`);
 
     if (dateFields) {
