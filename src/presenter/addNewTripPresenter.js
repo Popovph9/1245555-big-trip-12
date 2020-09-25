@@ -24,8 +24,8 @@ export default class AddNewTripPesenter {
 
     this._addNewButtonComponent.disabled = true;
     const offers = this.destinationsModel.getOffers();
-    const distinations = this.destinationsModel.getDestinations();
-    this._tripEditComponent = new TripEditForm(offers, distinations);
+    const destinations = this.destinationsModel.getDestinations();
+    this._tripEditComponent = new TripEditForm(offers, destinations);
 
     this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);
     this._tripEditComponent.setFormDeleteClickHandler(this._handleDeleteClick);

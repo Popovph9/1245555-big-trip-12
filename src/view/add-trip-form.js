@@ -78,8 +78,8 @@ const getClassName = (offer) => {
   return title;
 };
 
-const getCreateChooseOffersTemplate = (arr, type, tripOffers, isEdid) => {
-  if (isEdid) {
+const getCreateChooseOffersTemplate = (arr, type, tripOffers, isEdit) => {
+  if (isEdit) {
     const offersOfChoosenType = getElemntOfCurrentType(tripOffers, type);
     const currentOffers = offersOfChoosenType.map((offer) => offer.offers);
     const mergedOffers = flatten(currentOffers);
