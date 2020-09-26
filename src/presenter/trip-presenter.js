@@ -136,12 +136,14 @@ export default class TripPesenter {
           isDisabled: true,
           isSaving: true
         });
+        this._tripEditComponent.updateElement();
         break;
       case State.DELETING:
         this._tripEditComponent.updateData({
           isDisabled: true,
           isDeleting: true
         });
+        this._tripEditComponent.updateElement();
         break;
       case State.ABORTING:
         this._tripComponent.shake(resetFormState);
