@@ -328,6 +328,7 @@ export default class TripEditForm extends SmartClass {
 
   _dateToChangeHandler([userDate]) {
     this.updateData({dateTo: userDate});
+    this.updateElement();
   }
 
   _customSaveButtonClickHandler(evt) {
@@ -353,7 +354,6 @@ export default class TripEditForm extends SmartClass {
   _costChangeHandler(evt) {
     this._costField.value = evt.target.value;
     this.updateData({basePrice: Number(this._costField.value)});
-    this.updateElement();
   }
 
   _offersHandler(evt) {
@@ -520,7 +520,7 @@ export default class TripEditForm extends SmartClass {
 
     this._destinationField = this.getElement().querySelector(`#event-destination-1`);
     if (this._destinationField) {
-      this._destinationField.addEventListener(`change`, this._destinationChangeHandler);
+      this._destinationField.addEventListener(`input`, this._destinationChangeHandler);
 
       this._options = Array.from(this.getElement().querySelectorAll(`#destination-list-1 option`));
     }
