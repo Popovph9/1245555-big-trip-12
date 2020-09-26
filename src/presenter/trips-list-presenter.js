@@ -6,7 +6,7 @@ import {remove, render, RenderPosition} from "../utils/render.js";
 import TripsFilters from "../view/trips-filters.js";
 import Date from "../view/date.js";
 import TripPesenter, {State as TripPresenterState} from "./trip-presenter.js";
-import AddNewTripPesenter from "../presenter/addNewTripPresenter.js";
+import AddNewTripPesenter from "./new-trip-presenter.js";
 import NoTripPlaceholder from "../view/no-trip-placeholder.js";
 import SortModeMainContainer from "../view/sort-mode-main-container.js";
 import BlankListElement from "../view/blank-list.js";
@@ -302,12 +302,12 @@ export default class TripsListPresenter {
 
     if (dateFields) {
       const tripsContainers = this._mainContentComponent.getElement().querySelectorAll(`.trip-events__list`);
-      const containersArray = Array.from(tripsContainers);
+      const containers = Array.from(tripsContainers);
 
-      for (let i = 0; i < containersArray.length; i++) {
+      for (let i = 0; i < containers.length; i++) {
         const currentDateValue = dateFields[i].innerHTML;
         this._getTrips().filter((it) => formatDateToHumanize(it.dateFrom).includes(currentDateValue)).forEach((trip) => {
-          this._renderCard(containersArray[i], trip);
+          this._renderCard(containers[i], trip);
         });
       }
     }

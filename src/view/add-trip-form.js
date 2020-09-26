@@ -1,4 +1,4 @@
-import {TRANSFER_TYPES, ACTIVITY_TYPES, Preposition, Activity} from "../const.js";
+import {TRANSFER_TYPES, ACTIVITY_TYPES, Preposition, Activity, DESTINATIONS} from "../const.js";
 import {getUpperLetter, flatten} from "../utils/common.js";
 import {getTypes, getCurrentTypes, getElemntOfCurrentType, getElemntOfCurrentName} from "../utils/filter.js";
 import SmartClass from "./smart-class.js";
@@ -8,6 +8,8 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import he from "he";
 
 const CLASS_EXSEPTION = `class`;
+
+const BlancDest = DESTINATIONS;
 
 const ResetPlaceholder = {
   DELETE: `Delete`,
@@ -27,7 +29,7 @@ const BlanckDestination = {
 };
 
 const BlanckOffer = {
-  type: TRANSFER_TYPES[0],
+  type: TRANSFER_TYPES[0].toLowerCase(),
   offers: []
 };
 
@@ -289,7 +291,7 @@ export default class TripEditForm extends SmartClass {
     this._datepickerTo = null;
 
     this._tripOffers = tripOffers || BlanckOffer;
-    this._destinations = destination || BlanckDestination;
+    this._destinations = destination || BlancDest;
     this._uniqTypes = null;
 
     this._data = TripEditForm.parseTripToData(trips);
@@ -387,12 +389,12 @@ export default class TripEditForm extends SmartClass {
 
   _destinationChangeHandler(evt) {
     this._destinationField.value = evt.currentTarget.value;
-    let corretionCheck = this._optionArr.filter((option) => option.value === evt.currentTarget.value);
+    let corretionCheck = this._options.filter((option) => option.value === evt.currentTarget.value);
 
     const destinationOfCurrentName = getElemntOfCurrentName(this._destinations, this._destinationField.value);
     const currentOffers = destinationOfCurrentName.map((it) => it.pictures);
-    const currentDescriptionArr = destinationOfCurrentName.map((it) => it.description);
-    const currentDescription = currentDescriptionArr[0];
+    const currentDescriptions = destinationOfCurrentName.map((it) => it.description);
+    const currentDescription = currentDescriptions[0];
     const mergedPhotos = flatten(currentOffers);
 
     if (corretionCheck.length > 0) {
@@ -520,7 +522,7 @@ export default class TripEditForm extends SmartClass {
     if (this._destinationField) {
       this._destinationField.addEventListener(`change`, this._destinationChangeHandler);
 
-      this._optionArr = Array.from(this.getElement().querySelectorAll(`#destination-list-1 option`));
+      this._options = Array.from(this.getElement().querySelectorAll(`#destination-list-1 option`));
     }
 
     this._costField = this.getElement().querySelector(`#event-price-1`);

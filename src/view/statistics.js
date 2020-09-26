@@ -11,15 +11,15 @@ const renderMoneyChart = (moneyCtx, trips) => {
   const uniqTypes = makeItemsUniq(tripsTypes);
 
   const getCostsOfUniqTypes = (arr) => {
-    const pricesArr = [];
+    const prices = [];
     for (let i = 0; i < uniqTypes.length; i++) {
 
       const filterdCosts = arr.filter((trip) => trip.type === uniqTypes[i]).reduce((acc, it) => acc + it.basePrice, 0);
 
-      pricesArr.push(filterdCosts);
+      prices.push(filterdCosts);
     }
 
-    return pricesArr;
+    return prices;
   };
 
   return new Chart(moneyCtx, {
@@ -169,15 +169,15 @@ const renderTimeChart = (timeSpendCtx, trips) => {
   const uniqTypes = makeItemsUniq(tripsTypes);
 
   const getDurationOfUniqTypes = (arr) => {
-    const pricesArr = [];
+    const prices = [];
     for (let i = 0; i < uniqTypes.length; i++) {
 
       const filterdCosts = arr.filter((trip) => trip.type === uniqTypes[i]).reduce((acc, it) => acc + getTripDurationH(it), 0);
 
-      pricesArr.push(filterdCosts);
+      prices.push(filterdCosts);
     }
 
-    return pricesArr;
+    return prices;
   };
 
   return new Chart(timeSpendCtx, {

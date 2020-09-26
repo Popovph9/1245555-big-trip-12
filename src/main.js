@@ -4,7 +4,7 @@ import {PASS_LENGTH, END_POINT, UpdateType} from "./const.js";
 import TripsModel from "./model/tripModel.js";
 import FilterModel from "./model/filterModel.js";
 import DestinationsModel from "./model/destnationsModel.js";
-import SiteMenuPresenter from "./presenter/siteMenuPresenter";
+import SiteMenuPresenter from "./presenter/site-menu-presenter";
 import TripsListPresenter from "./presenter/trips-list-presenter.js";
 import Api from "./api.js";
 
