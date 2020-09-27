@@ -307,7 +307,6 @@ export default class TripEditForm extends SmartClass {
     this._offersHandler = this._offersHandler.bind(this);
 
     this._setInnerHandlers();
-
     this._setDatepickerTo();
     this._setDatepickerFrom();
   }
