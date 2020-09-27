@@ -2,7 +2,9 @@ import TripsModel from "./model/tripModel.js";
 
 const Method = {
   GET: `GET`,
-  PUT: `PUT`
+  PUT: `PUT`,
+  POST: `POST`,
+  DELETE: `DELETE`
 };
 
 const SuccessHTTPStatusRange = {
@@ -56,13 +58,31 @@ export default class Api {
       .then((trips) => trips.map(TripsModel.adaptToClient));
   }
 
-  updateTrips(trip) {
+  updateTrip(point) {
     return this._load({
-      url: `points/${trip.id}`,
+      url: `points/${point.id}`,
       method: Method.PUT,
-      body: JSON.stringify(TripsModel.adaptToServer(trip)),
+      body: JSON.stringify(TripsModel.adaptToServer(point)),
       headers: new Headers({"Content-Type": `application/json`})
     }).then(Api.toJSON).then(TripsModel.adaptToClient);
+  }
+
+  addTrip(trip) {
+    return this._load({
+      url: `points`,
+      method: Method.POST,
+      body: JSON.stringify(TripsModel.adaptToServer(trip)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+      .then(TripsModel.adaptToClient);
+  }
+
+  deleteTrip(trip) {
+    return this._load({
+      url: `points/${trip.id}`,
+      method: Method.DELETE
+    });
   }
 
   getDestinations() {

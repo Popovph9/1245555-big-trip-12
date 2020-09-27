@@ -3,9 +3,15 @@ import {UpdateType, UserAction} from "../const.js";
 import TripEditForm from "../view/add-trip-form.js";
 import Trip from "../view/trip.js";
 
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`
+};
+
 const Mode = {
   DEFAULT: `DEFAULT`,
-  EDITING: `EDITING`
+  EDITING: `EDITING`,
 };
 
 export default class TripPesenter {
@@ -53,7 +59,8 @@ export default class TripPesenter {
       replace(this._tripComponent, prevTripComponent);
     }
     if (this._mode === Mode.EDITING) {
-      replace(this._tripEditComponent, prevTripEditComponent);
+      replace(this._tripComponent, prevTripEditComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevTripComponent);
@@ -79,7 +86,6 @@ export default class TripPesenter {
 
   _handleSulbmitClick(trip) {
     this._changeData(UserAction.UPDATE_TASK, UpdateType.MINOR, trip);
-    this._replaceFormToCard();
   }
 
   _handleResetClick() {
@@ -112,6 +118,37 @@ export default class TripPesenter {
     if (this._mode !== Mode.DEFAULT) {
       this._tripEditComponent.reset(this._trip);
       this._replaceFormToCard();
+    }
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._tripEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._tripEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        this._tripEditComponent.updateElement();
+        break;
+      case State.DELETING:
+        this._tripEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        this._tripEditComponent.updateElement();
+        break;
+      case State.ABORTING:
+        this._tripComponent.shake(resetFormState);
+        this._tripEditComponent.shake(resetFormState);
+        break;
     }
   }
 }

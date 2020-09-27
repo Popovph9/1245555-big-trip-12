@@ -9,22 +9,22 @@ const getCreateDestinationTempalte = (arr) => {
   if (arr.length <= RENDERED_DESTINATIONS) {
     return arr.map((it) => `${it.destination.name}`).join(` — `);
   } else {
-    const shortArr = [];
+    const shortList = [];
     const first = arr[0];
     const last = arr[arr.length - 1];
-    shortArr.push(first);
-    shortArr.push(last);
-    return shortArr.map((it) => `${it.destination.name}`).join(` —...— `);
+    shortList.push(first);
+    shortList.push(last);
+    return shortList.map((it) => `${it.destination.name}`).join(` —...— `);
   }
 };
 
 const getCreateTripDurationTemplate = (arr) => {
-  const shortArr = [];
+  const shortList = [];
   const first = arr[0];
   const last = arr[arr.length - 1];
-  shortArr.push(first);
-  shortArr.push(last);
-  return shortArr.map((it) => `${formatDateToHumanize(it.dateFrom)}`).join(` — `);
+  shortList.push(first);
+  shortList.push(last);
+  return shortList.map((it) => `${formatDateToHumanize(it.dateFrom)}`).join(` — `);
 };
 
 const getPrice = (arr) => {

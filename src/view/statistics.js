@@ -11,15 +11,15 @@ const renderMoneyChart = (moneyCtx, trips) => {
   const uniqTypes = makeItemsUniq(tripsTypes);
 
   const getCostsOfUniqTypes = (arr) => {
-    const pricesArr = [];
+    const prices = [];
     for (let i = 0; i < uniqTypes.length; i++) {
 
       const filterdCosts = arr.filter((trip) => trip.type === uniqTypes[i]).reduce((acc, it) => acc + it.basePrice, 0);
 
-      pricesArr.push(filterdCosts);
+      prices.push(filterdCosts);
     }
 
-    return pricesArr;
+    return prices;
   };
 
   return new Chart(moneyCtx, {
@@ -169,15 +169,15 @@ const renderTimeChart = (timeSpendCtx, trips) => {
   const uniqTypes = makeItemsUniq(tripsTypes);
 
   const getDurationOfUniqTypes = (arr) => {
-    const pricesArr = [];
+    const prices = [];
     for (let i = 0; i < uniqTypes.length; i++) {
 
       const filterdCosts = arr.filter((trip) => trip.type === uniqTypes[i]).reduce((acc, it) => acc + getTripDurationH(it), 0);
 
-      pricesArr.push(filterdCosts);
+      prices.push(filterdCosts);
     }
 
-    return pricesArr;
+    return prices;
   };
 
   return new Chart(timeSpendCtx, {
@@ -246,6 +246,7 @@ const renderTimeChart = (timeSpendCtx, trips) => {
   });
 };
 
+
 const getStatisticsTemplate = () => {
   return `<section class="statistics">
   <h2 class="visually-hidden">Trip statistics</h2>
@@ -283,9 +284,14 @@ export default class Statistics extends SmartClass {
   }
 
   _setCharts() {
-    if (this._moneyChart !== null || this._transportChart !== null) {
+    if (this._moneyChart !== null) {
       this._moneyChart = null;
+    }
+    if (this._transportChart !== null) {
       this._transportChart = null;
+    }
+    if (this._timeChart !== null) {
+      this._timeChart = null;
     }
 
     const moneyCtx = this.getElement().querySelector(`.statistic__money`);
@@ -294,24 +300,20 @@ export default class Statistics extends SmartClass {
 
     const tripsTypes = getTypes(this._trips);
     const uniqTypesLength = makeItemsUniq(tripsTypes).length;
-
-    const getActivity = () => {
-      const newArr = [];
-      for (let i = 0; i < TRANSFER_TYPES.length; i++) {
-        const newItem = tripsTypes.filter((it) => it === TRANSFER_TYPES[i]);
-        newArr.push(...newItem);
-      }
-      return newArr;
+    const activity = getCurrentTypes(tripsTypes, TRANSFER_TYPES);
+    const uniqActivity = makeItemsUniq(activity);
+    const getTripsLength = (arr, type) => {
+      return arr.filter((it) => it.type === type).length;
     };
-    const uniqActivityLength = makeItemsUniq(getActivity()).length;
-
+    const activivtyCounts = uniqActivity.map((type) => getTripsLength(this._trips, type));
+    const uniqActivityLength = activivtyCounts.length;
 
     const BAR_HEIGHT = 55;
     moneyCtx.height = BAR_HEIGHT * uniqTypesLength;
     transportCtx.height = BAR_HEIGHT * uniqActivityLength;
     timeSpendCtx.height = BAR_HEIGHT * uniqTypesLength;
 
-    if (moneyCtx && transportCtx) {
+    if (moneyCtx && transportCtx && timeSpendCtx) {
       this._moneyChart = renderMoneyChart(moneyCtx, this._trips);
       this._transportChart = renderTransportChart(transportCtx, this._trips);
       this._timeChart = renderTimeChart(timeSpendCtx, this._trips);

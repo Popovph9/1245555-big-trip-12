@@ -4,7 +4,7 @@ import {PASS_LENGTH, END_POINT, UpdateType} from "./const.js";
 import TripsModel from "./model/tripModel.js";
 import FilterModel from "./model/filterModel.js";
 import DestinationsModel from "./model/destnationsModel.js";
-import SiteMenuPresenter from "./presenter/siteMenuPresenter";
+import SiteMenuPresenter from "./presenter/site-menu-presenter";
 import TripsListPresenter from "./presenter/trips-list-presenter.js";
 import Api from "./api.js";
 
@@ -21,7 +21,7 @@ const tripsModel = new TripsModel();
 const destinationsModel = new DestinationsModel();
 const filterModel = new FilterModel();
 
-const tripsListPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton, destinationsModel);
+const tripsListPresenter = new TripsListPresenter(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton, destinationsModel, api);
 const siteMenuPresenter = new SiteMenuPresenter(routeContainer, tripsModel, filterModel, tripsListPresenter, tripsContainer, addNewButton);
 tripsListPresenter.setSiteMenuPresenter(siteMenuPresenter);
 
@@ -42,8 +42,14 @@ tripsListPresenter.init();
 
 api.getDestinations().then((destinations) => {
   destinationsModel.setDestinations(UpdateType.MAJOR, destinations);
+})
+.catch(() => {
+  destinationsModel.setDestinations(UpdateType.MAJOR, []);
 });
 
 api.getOffers().then((offers) => {
   destinationsModel.setOffers(UpdateType.MAJOR, offers);
+})
+.catch(() => {
+  destinationsModel.setOffers(UpdateType.MAJOR, []);
 });

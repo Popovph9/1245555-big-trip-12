@@ -1,6 +1,6 @@
 export const TRANSFER_TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`];
 export const ACTIVITY_TYPES = [`Check-in`, `Sightseeing`, `Restaurant`];
-export const DESTINATION = [`Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`];
+export const DESTINATIONS = [`Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`];
 export const Preposition = {
   TO: `to`,
   IN: `in`

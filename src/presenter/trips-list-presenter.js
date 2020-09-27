@@ -5,8 +5,8 @@ import {formatDateToHumanize} from "../utils/common.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 import TripsFilters from "../view/trips-filters.js";
 import Date from "../view/date.js";
-import TripPesenter from "./trip-presenter.js";
-import AddNewTripPesenter from "../presenter/addNewTripPresenter.js";
+import TripPesenter, {State as TripPresenterState} from "./trip-presenter.js";
+import AddNewTripPesenter from "./new-trip-presenter.js";
 import NoTripPlaceholder from "../view/no-trip-placeholder.js";
 import SortModeMainContainer from "../view/sort-mode-main-container.js";
 import BlankListElement from "../view/blank-list.js";
@@ -15,7 +15,7 @@ import SortModeTripsListContainer from "../view/sort-mode-tripsList-container.js
 import Loading from "../view/loading.js";
 
 export default class TripsListPresenter {
-  constructor(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton, destinationsModel) {
+  constructor(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton, destinationsModel, api) {
     this._tripPesenter = {};
     this._tripsContainer = tripsContainer;
     this._tripsFiltersContainer = tripsFiltersContainer;
@@ -27,6 +27,7 @@ export default class TripsListPresenter {
 
     this._currentSortType = SortTypes.EVENT;
 
+    this._api = api;
     this._filtersComponent = null;
     this._mainContentComponent = null;
     this._placeholderComponent = new NoTripPlaceholder();
@@ -140,13 +141,33 @@ export default class TripsListPresenter {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_TASK:
-        this._tripsModel.updateTrip(updateType, update);
+        this._tripPesenter[update.id].setViewState(TripPresenterState.SAVING);
+        this._api.updateTrip(update)
+        .then((response) => {
+          this._tripsModel.updateTrip(updateType, response);
+        })
+        .catch(() => {
+          this._tripPesenter[update.id].setViewState(TripPresenterState.ABORTING);
+        });
         break;
       case UserAction.ADD_TASK:
-        this._tripsModel.addTrip(updateType, update);
+        this._addNewTaskPresenter.setSaving();
+        this._api.addTrip(update)
+        .then((response) => {
+          this._tripsModel.addTrip(updateType, response);
+        })
+        .catch(() => {
+          this._addNewTaskPresenter.setAborting();
+        });
         break;
       case UserAction.DELETE_TASK:
-        this._tripsModel.deleteTrip(updateType, update);
+        this._tripPesenter[update.id].setViewState(TripPresenterState.DELETING);
+        this._api.deleteTrip(update).then(() => {
+          this._tripsModel.deleteTrip(updateType, update);
+        })
+        .catch(() => {
+          this._tripPesenter[update.id].setViewState(TripPresenterState.ABORTING);
+        });
         break;
     }
   }
@@ -281,12 +302,12 @@ export default class TripsListPresenter {
 
     if (dateFields) {
       const tripsContainers = this._mainContentComponent.getElement().querySelectorAll(`.trip-events__list`);
-      const containersArray = Array.from(tripsContainers);
+      const containers = Array.from(tripsContainers);
 
-      for (let i = 0; i < containersArray.length; i++) {
+      for (let i = 0; i < containers.length; i++) {
         const currentDateValue = dateFields[i].innerHTML;
         this._getTrips().filter((it) => formatDateToHumanize(it.dateFrom).includes(currentDateValue)).forEach((trip) => {
-          this._renderCard(containersArray[i], trip);
+          this._renderCard(containers[i], trip);
         });
       }
     }
