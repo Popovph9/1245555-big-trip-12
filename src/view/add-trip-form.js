@@ -388,7 +388,7 @@ export default class TripEditForm extends SmartClass {
 
   _destinationChangeHandler(evt) {
     this._destinationField.value = evt.currentTarget.value;
-    let corretionCheck = this._options.filter((option) => option.value === evt.currentTarget.value);
+    const corretionCheck = this._options.filter((option) => option.value === evt.currentTarget.value);
 
     const destinationOfCurrentName = getElemntOfCurrentName(this._destinations, this._destinationField.value);
     const currentOffers = destinationOfCurrentName.map((it) => it.pictures);

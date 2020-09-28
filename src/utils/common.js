@@ -8,7 +8,7 @@ export const getRandomInteger = (a = 0, b = 1) => {
 };
 
 export const getRandomArray = function (array) {
-  let anotherArray = [];
+  const anotherArray = [];
 
   array.forEach(function (item) {
     if (getRandomInteger(0, 1) === 1) {
@@ -20,7 +20,7 @@ export const getRandomArray = function (array) {
 };
 
 export const getRandomArrayOfCurrentLength = function (array, number) {
-  let anotherArray = [];
+  const anotherArray = [];
   let slicedArray = [];
 
   array.forEach(function (item) {
@@ -91,7 +91,7 @@ export const passGen = (len) => {
   const chrs = `abdehkmnpswxzABDEFGHKMNPQRSTWXZ123456789`;
   let str = ``;
   for (let i = 0; i < len; i++) {
-    let pos = Math.floor(Math.random() * chrs.length);
+    const pos = Math.floor(Math.random() * chrs.length);
     str += chrs.substring(pos, pos + 1);
   }
   return str;
@@ -108,14 +108,4 @@ export const getUpperLetter = (str) => {
 
 export const flatten = (arr) => {
   return [].concat(...arr);
-};
-
-export const createObjcts = (keys, value) => {
-  let obj = {};
-  for (let i = 0; i < keys.length; i++) {
-    let key = keys[i];
-
-    obj[key] = value;
-  }
-  return obj;
 };
