@@ -30,7 +30,7 @@ export default class TripsListPresenter {
     this._api = api;
     this._filtersComponent = null;
     this._mainContentComponent = null;
-    this._placeholderComponent = new NoTripPlaceholder();
+    this._placeholderComponent = null;
     this._sortContainerComponent = new SortModeMainContainer();
     this._sortModeTripsContainer = null;
     this._sortModeBlanckListComponent = new BlankListElement();
@@ -268,17 +268,12 @@ export default class TripsListPresenter {
   }
 
   createNewTrip() {
-    if (this._placeholderComponent !== null) {
-      this._placeholderComponent.getElement().remove();
-      this._placeholderComponent.removeElement();
-      this._placeholderComponent = null;
-    }
-
     this._handleSortTypeChange();
     this._siteMenuPresenter.setCurrentFilterType(FilterType.EVERYTHING);
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._currentSortType = SortTypes.EVENT;
     this._addNewTaskPresenter.init();
+    this._removePlaceholder();
     Object.values(this._tripPesenter).forEach((presenter) => presenter.resetView());
   }
 
@@ -319,6 +314,18 @@ export default class TripsListPresenter {
   }
 
   _renderPlaceholder() {
+    this._removePlaceholder();
+
+    this._placeholderComponent = new NoTripPlaceholder();
     render(this._tripsContainer, this._placeholderComponent, RenderPosition.BEFOREEND);
   }
+
+  _removePlaceholder() {
+    if (this._placeholderComponent !== null) {
+      console.log(`1`);
+      remove(this._placeholderComponent);
+      this._placeholderComponent = null;
+    }
+  }
 }
+
