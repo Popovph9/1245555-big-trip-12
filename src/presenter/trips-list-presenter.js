@@ -322,7 +322,6 @@ export default class TripsListPresenter {
 
   _removePlaceholder() {
     if (this._placeholderComponent !== null) {
-      console.log(`1`);
       remove(this._placeholderComponent);
       this._placeholderComponent = null;
     }
