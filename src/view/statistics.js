@@ -14,9 +14,9 @@ const renderMoneyChart = (moneyCtx, trips) => {
     const prices = [];
     for (let i = 0; i < uniqTypes.length; i++) {
 
-      const filterdCosts = arr.filter((trip) => trip.type === uniqTypes[i]).reduce((acc, it) => acc + it.basePrice, 0);
+      const filteredCosts = arr.filter((trip) => trip.type === uniqTypes[i]).reduce((acc, it) => acc + it.basePrice, 0);
 
-      prices.push(filterdCosts);
+      prices.push(filteredCosts);
     }
 
     return prices;
@@ -96,7 +96,7 @@ const renderTransportChart = (transportCtx, trips) => {
     return arr.filter((it) => it.type === type).length;
   };
 
-  const activivtyCounts = uniqActivity.map((type) => getTripsLength(trips, type));
+  const activityCounts = uniqActivity.map((type) => getTripsLength(trips, type));
 
   return new Chart(transportCtx, {
     plugins: [ChartDataLabels],
@@ -104,7 +104,7 @@ const renderTransportChart = (transportCtx, trips) => {
     data: {
       labels: uniqActivity,
       datasets: [{
-        data: activivtyCounts,
+        data: activityCounts,
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
         anchor: `start`
@@ -172,9 +172,9 @@ const renderTimeChart = (timeSpendCtx, trips) => {
     const prices = [];
     for (let i = 0; i < uniqTypes.length; i++) {
 
-      const filterdCosts = arr.filter((trip) => trip.type === uniqTypes[i]).reduce((acc, it) => acc + getTripDurationH(it), 0);
+      const filteredCosts = arr.filter((trip) => trip.type === uniqTypes[i]).reduce((acc, it) => acc + getTripDurationH(it), 0);
 
-      prices.push(filterdCosts);
+      prices.push(filteredCosts);
     }
 
     return prices;
@@ -305,8 +305,8 @@ export default class Statistics extends SmartClass {
     const getTripsLength = (arr, type) => {
       return arr.filter((it) => it.type === type).length;
     };
-    const activivtyCounts = uniqActivity.map((type) => getTripsLength(this._trips, type));
-    const uniqActivityLength = activivtyCounts.length;
+    const activityCounts = uniqActivity.map((type) => getTripsLength(this._trips, type));
+    const uniqActivityLength = activityCounts.length;
 
     const BAR_HEIGHT = 55;
     moneyCtx.height = BAR_HEIGHT * uniqTypesLength;

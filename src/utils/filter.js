@@ -20,10 +20,10 @@ export const getCurrentTypes = (arr, types) => {
   return newArr;
 };
 
-export const getElemntOfCurrentType = (arr, type) => {
+export const getElementOfCurrentType = (arr, type) => {
   return arr.filter((it) => it.type === type);
 };
 
-export const getElemntOfCurrentName = (arr, name) => {
+export const getElementOfCurrentName = (arr, name) => {
   return arr.filter((it) => it.name === name);
 };

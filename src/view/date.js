@@ -16,8 +16,8 @@ const getPeriodTemplate = (arr) => {
 
 const getDateTemplate = (trips) => {
   trips.sort(sortTripsByDate);
-  const formatedTrips = Array.from(new Set(trips.map((it) => formatDateToHumanize(it.dateFrom))));
-  const periodTemplate = getPeriodTemplate(formatedTrips);
+  const formattedTrips = Array.from(new Set(trips.map((it) => formatDateToHumanize(it.dateFrom))));
+  const periodTemplate = getPeriodTemplate(formattedTrips);
 
   return (
     `<ul class="trip-days">

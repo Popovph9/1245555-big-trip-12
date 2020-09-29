@@ -1,6 +1,6 @@
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
 import {UpdateType, UserAction} from "../const.js";
-import TripEditForm from "../view/add-trip-form.js";
+import TripEditForm from "../view/trip-edit-form.js";
 import Trip from "../view/trip.js";
 
 export const State = {
@@ -14,7 +14,7 @@ const Mode = {
   EDITING: `EDITING`,
 };
 
-export default class TripPesenter {
+export default class TripPresenter {
   constructor(tripContainer, changeMode, changeData, destinationsModel) {
     this._tripContainer = tripContainer;
     this._changeMode = changeMode;
@@ -27,7 +27,7 @@ export default class TripPesenter {
 
     this._escKeydownHandler = this._escKeydownHandler.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
-    this._handleSulbmitClick = this._handleSulbmitClick.bind(this);
+    this._handleSubmitClick = this._handleSubmitClick.bind(this);
     this._handleResetClick = this._handleResetClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -46,7 +46,7 @@ export default class TripPesenter {
     this._tripEditComponent = new TripEditForm(offers, destinations, trip);
 
     this._tripComponent.setCustomClickHandler(this._handleEditClick);
-    this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);
+    this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSubmitClick);
     this._tripEditComponent.setCustomCloseButtonClickHandler(this._handleResetClick);
     this._tripEditComponent.setFavoriteButtonClickHandler(this._handleFavoriteClick);
     this._tripEditComponent.setFormDeleteClickHandler(this._handleDeleteClick);
@@ -84,7 +84,7 @@ export default class TripPesenter {
     this._replaceCardToForm();
   }
 
-  _handleSulbmitClick(trip) {
+  _handleSubmitClick(trip) {
     this._changeData(UserAction.UPDATE_TASK, UpdateType.MINOR, trip);
   }
 

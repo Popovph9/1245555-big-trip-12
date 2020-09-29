@@ -30,7 +30,7 @@ const getDurationTemplate = (duration) => {
   return `${days} ${hours} ${minutes}`;
 };
 
-const getgetCreateOfferItemTemplate = (offers) => {
+const getCreateOfferItemTemplate = (offers) => {
   return `
     ${offers.map((offer) => `
       <li class="event__offer">
@@ -46,7 +46,7 @@ const getgetCreateOfferItemTemplate = (offers) => {
 const getTripTemplate = (trip) => {
   const {type, destination, dateFrom, dateTo, basePrice, offers} = trip;
 
-  const offerItemTemplate = getgetCreateOfferItemTemplate(offers);
+  const offerItemTemplate = getCreateOfferItemTemplate(offers);
   const duration = getDuration(dateFrom, dateTo);
   const durationTemplate = getDurationTemplate(duration);
 

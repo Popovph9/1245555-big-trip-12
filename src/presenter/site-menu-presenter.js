@@ -2,7 +2,7 @@ import {remove, render, RenderPosition, replace} from "../utils/render.js";
 import {FilterType, UpdateType, MenuItem, FilterName} from "../const.js";
 import {filter} from "../utils/filter.js";
 import RouteMenu from "../view/route-menu.js";
-import Route from "../view/route-template.js";
+import Route from "../view/route.js";
 import RouteFilters from "../view/route-filters.js";
 import Statistics from "../view/statistics.js";
 

@@ -1,8 +1,8 @@
 import {UpdateType, UserAction} from "../const.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
-import TripEditForm from "../view/add-trip-form.js";
+import TripEditForm from "../view/trip-edit-form.js";
 
-export default class AddNewTripPesenter {
+export default class AddNewTripPresenter {
   constructor(tripContainer, changeData, addNewButton, destinationsModel) {
     this.destinationsModel = destinationsModel;
     this._tripContainer = tripContainer;
@@ -12,7 +12,7 @@ export default class AddNewTripPesenter {
     this._tripEditComponent = null;
 
     this._escKeydownHandler = this._escKeydownHandler.bind(this);
-    this._handleSulbmitClick = this._handleSulbmitClick.bind(this);
+    this._handleSubmitClick = this._handleSubmitClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
@@ -26,7 +26,7 @@ export default class AddNewTripPesenter {
     const destinations = this.destinationsModel.getDestinations();
     this._tripEditComponent = new TripEditForm(offers, destinations);
 
-    this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSulbmitClick);
+    this._tripEditComponent.setCustomSaveButtonClickHandler(this._handleSubmitClick);
     this._tripEditComponent.setFormDeleteClickHandler(this._handleDeleteClick);
 
     render(this._tripContainer, this._tripEditComponent, RenderPosition.AFTERBEGIN);
@@ -34,7 +34,7 @@ export default class AddNewTripPesenter {
     document.addEventListener(`keydown`, this._escKeydownHandler);
   }
 
-  _handleSulbmitClick(trip) {
+  _handleSubmitClick(trip) {
     this._changeData(
         UserAction.ADD_TASK,
         UpdateType.MAJOR,

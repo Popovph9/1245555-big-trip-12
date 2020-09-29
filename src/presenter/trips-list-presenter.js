@@ -5,18 +5,18 @@ import {formatDateToHumanize} from "../utils/common.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 import TripsFilters from "../view/trips-filters.js";
 import Date from "../view/date.js";
-import TripPesenter, {State as TripPresenterState} from "./trip-presenter.js";
-import AddNewTripPesenter from "./new-trip-presenter.js";
+import TripPresenter, {State as TripPresenterState} from "./trip-presenter.js";
+import AddNewTripPresenter from "./new-trip-presenter.js";
 import NoTripPlaceholder from "../view/no-trip-placeholder.js";
 import SortModeMainContainer from "../view/sort-mode-main-container.js";
 import BlankListElement from "../view/blank-list.js";
-import BlanckDateBlock from "../view/blanck-date.js";
+import BlankDateBlock from "../view/blank-date.js";
 import SortModeTripsListContainer from "../view/sort-mode-tripsList-container.js";
 import Loading from "../view/loading.js";
 
 export default class TripsListPresenter {
   constructor(tripsContainer, tripsFiltersContainer, tripsModel, filterModel, addNewButton, destinationsModel, api) {
-    this._tripPesenter = {};
+    this._tripPresenter = {};
     this._tripsContainer = tripsContainer;
     this._tripsFiltersContainer = tripsFiltersContainer;
     this._addNewButton = addNewButton;
@@ -33,8 +33,8 @@ export default class TripsListPresenter {
     this._placeholderComponent = null;
     this._sortContainerComponent = new SortModeMainContainer();
     this._sortModeTripsContainer = null;
-    this._sortModeBlanckListComponent = new BlankListElement();
-    this._blanckDateBlockConponent = new BlanckDateBlock();
+    this._sortModeBlankListComponent = new BlankListElement();
+    this._blankDateBlockComponent = new BlankDateBlock();
     this._loadingComponent = new Loading();
     this._siteMenuPresenter = null;
 
@@ -43,7 +43,7 @@ export default class TripsListPresenter {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
 
-    this._addNewTaskPresenter = new AddNewTripPesenter(this._tripsContainer, this._handleViewAction, this._addNewButton, destinationsModel);
+    this._addNewTaskPresenter = new AddNewTripPresenter(this._tripsContainer, this._handleViewAction, this._addNewButton, destinationsModel);
   }
 
   init() {
@@ -62,7 +62,7 @@ export default class TripsListPresenter {
 
     if (this._tripsModel.getTrips().length === 0) {
       if (this._filtersComponent !== null) {
-        this._removeFiters();
+        this._removeFilters();
       }
 
       this._renderPlaceholder();
@@ -85,20 +85,20 @@ export default class TripsListPresenter {
   _getTrips() {
     const filterType = this._filterModel.getFilter();
     const trips = this._tripsModel.getTrips();
-    const filtredTrips = filter[filterType](trips);
+    const filteredTrips = filter[filterType](trips);
 
     switch (this._currentSortType) {
       case SortTypes.EVENT:
-        return filtredTrips;
+        return filteredTrips;
 
       case SortTypes.TIME:
-        return filtredTrips.sort(sortTripsByTime);
+        return filteredTrips.sort(sortTripsByTime);
 
       case SortTypes.PRICE:
-        return filtredTrips.sort(sortTripsByPrice);
+        return filteredTrips.sort(sortTripsByPrice);
 
     }
-    return filtredTrips;
+    return filteredTrips;
   }
 
   _handleSortTypeChange(sortType) {
@@ -124,7 +124,7 @@ export default class TripsListPresenter {
 
     this._renderSortContainerComponent();
     this._renderSortModeBlankList();
-    this._renderBlanckDateComponent();
+    this._renderBlankDateComponent();
     this._renderSortModeTripsContainer();
 
 
@@ -135,19 +135,19 @@ export default class TripsListPresenter {
 
   _handleModeChange() {
     this._addNewTaskPresenter.destroy();
-    Object.values(this._tripPesenter).forEach((presenter) => presenter.resetView());
+    Object.values(this._tripPresenter).forEach((presenter) => presenter.resetView());
   }
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_TASK:
-        this._tripPesenter[update.id].setViewState(TripPresenterState.SAVING);
+        this._tripPresenter[update.id].setViewState(TripPresenterState.SAVING);
         this._api.updateTrip(update)
         .then((response) => {
           this._tripsModel.updateTrip(updateType, response);
         })
         .catch(() => {
-          this._tripPesenter[update.id].setViewState(TripPresenterState.ABORTING);
+          this._tripPresenter[update.id].setViewState(TripPresenterState.ABORTING);
         });
         break;
       case UserAction.ADD_TASK:
@@ -161,12 +161,12 @@ export default class TripsListPresenter {
         });
         break;
       case UserAction.DELETE_TASK:
-        this._tripPesenter[update.id].setViewState(TripPresenterState.DELETING);
+        this._tripPresenter[update.id].setViewState(TripPresenterState.DELETING);
         this._api.deleteTrip(update).then(() => {
           this._tripsModel.deleteTrip(updateType, update);
         })
         .catch(() => {
-          this._tripPesenter[update.id].setViewState(TripPresenterState.ABORTING);
+          this._tripPresenter[update.id].setViewState(TripPresenterState.ABORTING);
         });
         break;
     }
@@ -175,10 +175,10 @@ export default class TripsListPresenter {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._tripPesenter[data.id].init(data);
+        this._tripPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        this._tripPesenter[data.id].init(data);
+        this._tripPresenter[data.id].init(data);
         break;
       case UpdateType.MAJOR:
         this._currentSortType = SortTypes.EVENT;
@@ -202,17 +202,17 @@ export default class TripsListPresenter {
   }
 
   _renderSortModeBlankList() {
-    render(this._sortContainerComponent, this._sortModeBlanckListComponent, RenderPosition.BEFOREEND);
+    render(this._sortContainerComponent, this._sortModeBlankListComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderBlanckDateComponent() {
-    render(this._sortModeBlanckListComponent, this._blanckDateBlockConponent, RenderPosition.AFTERBEGIN);
+  _renderBlankDateComponent() {
+    render(this._sortModeBlankListComponent, this._blankDateBlockComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderSortModeTripsContainer() {
     if (this._sortModeTripsContainer === null) {
       this._sortModeTripsContainer = new SortModeTripsListContainer();
-      render(this._sortModeBlanckListComponent, this._sortModeTripsContainer, RenderPosition.BEFOREEND);
+      render(this._sortModeBlankListComponent, this._sortModeTripsContainer, RenderPosition.BEFOREEND);
     } else {
       this._rerenderSortModeTripsContainer();
     }
@@ -228,7 +228,7 @@ export default class TripsListPresenter {
 
   _renderFilters() {
     if (this._filtersComponent !== null) {
-      this._removeFiters();
+      this._removeFilters();
     }
 
     this._filtersComponent = new TripsFilters(this._currentSortType);
@@ -238,7 +238,7 @@ export default class TripsListPresenter {
     this._filtersComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
-  _removeFiters() {
+  _removeFilters() {
     this._filtersComponent.getElement().remove();
     this._filtersComponent.removeElement();
     this._filtersComponent = null;
@@ -248,8 +248,8 @@ export default class TripsListPresenter {
     this._addNewTaskPresenter.destroy();
     this._removeMainComponent();
     remove(this._sortModeTripsContainer);
-    Object.values(this._tripPesenter).forEach((presenter) => presenter.destroy());
-    this._tripPesenter = {};
+    Object.values(this._tripPresenter).forEach((presenter) => presenter.destroy());
+    this._tripPresenter = {};
   }
 
   _renderMainContentComponent() {
@@ -274,7 +274,7 @@ export default class TripsListPresenter {
     this._currentSortType = SortTypes.EVENT;
     this._addNewTaskPresenter.init();
     this._removePlaceholder();
-    Object.values(this._tripPesenter).forEach((presenter) => presenter.resetView());
+    Object.values(this._tripPresenter).forEach((presenter) => presenter.resetView());
   }
 
   setSiteMenuPresenter(siteMenuPresenter) {
@@ -282,15 +282,15 @@ export default class TripsListPresenter {
   }
 
   _renderCard(tripListElement, trip) {
-    const tripPesenter = new TripPesenter(tripListElement, this._handleModeChange, this._handleViewAction, this._destinationsModel);
-    tripPesenter.init(trip);
-    this._tripPesenter[trip.id] = tripPesenter;
+    const tripPresenter = new TripPresenter(tripListElement, this._handleModeChange, this._handleViewAction, this._destinationsModel);
+    tripPresenter.init(trip);
+    this._tripPresenter[trip.id] = tripPresenter;
   }
 
   _renderCards() {
     if (this._mainContentComponent !== null) {
-      Object.values(this._tripPesenter).forEach((presenter) => presenter.destroy());
-      this._tripPesenter = {};
+      Object.values(this._tripPresenter).forEach((presenter) => presenter.destroy());
+      this._tripPresenter = {};
     }
 
     const dateFields = this._mainContentComponent.getElement().querySelectorAll(`.day__date`);

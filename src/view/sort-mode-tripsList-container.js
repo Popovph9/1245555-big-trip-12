@@ -1,6 +1,6 @@
 import AbstractClass from "./abstract-class.js";
 
-const getTripsContainerBlanckTemplate = () => {
+const getTripsContainerBlankTemplate = () => {
   return (
     `<ul class="trip-events__list">
     </ul>`
@@ -14,6 +14,6 @@ export default class SortModeTripsListContainer extends AbstractClass {
   }
 
   getTemplate() {
-    return getTripsContainerBlanckTemplate(this._trips);
+    return getTripsContainerBlankTemplate(this._trips);
   }
 }

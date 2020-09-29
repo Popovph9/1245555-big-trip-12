@@ -1,6 +1,6 @@
 import AbstractClass from "./abstract-class.js";
 
-const getBlanckDateBlockTemplate = () => {
+const getBlankDateBlockTemplate = () => {
   return (
     `<div class="day__info">
       <span class="day__counter"></span>
@@ -9,13 +9,13 @@ const getBlanckDateBlockTemplate = () => {
   );
 };
 
-export default class BlanckDateBlock extends AbstractClass {
+export default class BlankDateBlock extends AbstractClass {
   constructor(trips) {
     super();
     this._trips = trips;
   }
 
   getTemplate() {
-    return getBlanckDateBlockTemplate(this._trips);
+    return getBlankDateBlockTemplate(this._trips);
   }
 }

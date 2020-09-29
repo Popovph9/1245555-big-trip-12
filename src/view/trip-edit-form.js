@@ -1,15 +1,15 @@
 import {TRANSFER_TYPES, ACTIVITY_TYPES, Preposition, Activity, DESTINATIONS} from "../const.js";
 import {getUpperLetter, flatten} from "../utils/common.js";
-import {getTypes, getCurrentTypes, getElemntOfCurrentType, getElemntOfCurrentName} from "../utils/filter.js";
+import {getTypes, getCurrentTypes, getElementOfCurrentType, getElementOfCurrentName} from "../utils/filter.js";
 import SmartClass from "./smart-class.js";
 import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import he from "he";
 
-const CLASS_EXSEPTION = `class`;
+const CLASS_EXCEPTION = `class`;
 
-const BlancDest = DESTINATIONS;
+const BlankDest = DESTINATIONS;
 
 const ResetPlaceholder = {
   DELETE: `Delete`,
@@ -17,7 +17,7 @@ const ResetPlaceholder = {
   CANCEL: `Cancel`
 };
 
-const BlanckDestination = {
+const BlankDestination = {
   description: ``,
   name: ``,
   pictures: [
@@ -28,18 +28,18 @@ const BlanckDestination = {
   ]
 };
 
-const BlanckOffer = {
+const BlankOffer = {
   type: TRANSFER_TYPES[0].toLowerCase(),
   offers: []
 };
 
-const BlancTrip = {
-  type: BlanckOffer.type,
-  destination: BlanckDestination,
+const BlankTrip = {
+  type: BlankOffer.type,
+  destination: BlankDestination,
   dateFrom: ``,
   dateTo: ``,
   basePrice: ``,
-  offers: BlanckOffer.offers,
+  offers: BlankOffer.offers,
   isFavorite: false,
   isDisabled: false,
   isSaving: false,
@@ -85,7 +85,7 @@ const getCreateChooseDestinationTemplate = (arr) => {
 
 const getClassName = (offer) => {
   let title = offer.title.split(` `).pop();
-  if (title === CLASS_EXSEPTION) {
+  if (title === CLASS_EXCEPTION) {
     const newSplit = offer.title.split(` `);
     title = newSplit[newSplit.length - 2];
   }
@@ -94,8 +94,8 @@ const getClassName = (offer) => {
 
 const getCreateChooseOffersTemplate = (arr, type, tripOffers, isEdit, isDisabled) => {
   if (isEdit) {
-    const offersOfChoosenType = getElemntOfCurrentType(tripOffers, type);
-    const currentOffers = offersOfChoosenType.map((offer) => offer.offers);
+    const offersOfChosenType = getElementOfCurrentType(tripOffers, type);
+    const currentOffers = offersOfChosenType.map((offer) => offer.offers);
     const mergedOffers = flatten(currentOffers);
     return mergedOffers.map((offer) => `
     <div class="event__offer-selector">
@@ -125,7 +125,7 @@ const getCreateChooseOffersTemplate = (arr, type, tripOffers, isEdit, isDisabled
 
 const getCreatePhotoTemplate = (arr, name, destinations, isEdit) => {
   if (isEdit) {
-    const destinationOfCurrentName = getElemntOfCurrentName(destinations, name);
+    const destinationOfCurrentName = getElementOfCurrentName(destinations, name);
     const currentOffers = destinationOfCurrentName.map((it) => it.pictures);
     const mergedPhotos = flatten(currentOffers);
 
@@ -137,7 +137,7 @@ const getCreatePhotoTemplate = (arr, name, destinations, isEdit) => {
 
 const getCreateDescriptionTemplate = (it, name, destinations, isEdit) => {
   if (isEdit) {
-    const destinationOfCurrentName = getElemntOfCurrentName(destinations, name);
+    const destinationOfCurrentName = getElementOfCurrentName(destinations, name);
     const currentDescription = destinationOfCurrentName.map((point) => point.description);
     if (currentDescription) {
       return (`<p class="event__destination-description">${currentDescription}</p>`);
@@ -170,14 +170,14 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
   const descriptionTemplate = getCreateDescriptionTemplate(destination, destination.name, destinations, isEdit);
   const resetButtonTemplate = getResetButtonTemplate(isNew, isDeleting, isDisabled);
 
-  let offersTemplateTriger = false;
+  let offersTemplateTrigger = false;
   if (offersTemplate) {
-    offersTemplateTriger = true;
+    offersTemplateTrigger = true;
   }
 
-  let descriptionTemplateTriger = false;
+  let descriptionTemplateTrigger = false;
   if (descriptionTemplate) {
-    descriptionTemplateTriger = true;
+    descriptionTemplateTrigger = true;
   }
 
   return (
@@ -254,7 +254,7 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
 
       ${destination.name !== `` ? `
       <section class="event__details">
-        ${offersTemplateTriger ? `
+        ${offersTemplateTrigger ? `
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
@@ -263,9 +263,9 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
           ${offersTemplate}
         </section>` : ``}
 
-        ${descriptionTemplateTriger || isPhoto ? `
+        ${descriptionTemplateTrigger || isPhoto ? `
         <section class="event__section  event__section--destination">
-          ${descriptionTemplateTriger ? `
+          ${descriptionTemplateTrigger ? `
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           ${descriptionTemplate}` : ``}
 
@@ -284,15 +284,13 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
 };
 
 export default class TripEditForm extends SmartClass {
-  constructor(tripOffers, destination, trips = BlancTrip) {
+  constructor(tripOffers, destination, trips = BlankTrip) {
     super();
-    this._trips = trips || BlancTrip;
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
-    this._tripOffers = tripOffers || BlanckOffer;
-    this._destinations = destination || BlancDest;
-    this._uniqTypes = null;
+    this._tripOffers = tripOffers || BlankOffer;
+    this._destinations = destination || BlankDest;
 
     this._data = TripEditForm.parseTripToData(trips);
     this._customSaveButtonClickHandler = this._customSaveButtonClickHandler.bind(this);
@@ -309,10 +307,6 @@ export default class TripEditForm extends SmartClass {
     this._setInnerHandlers();
     this._setDatepickerTo();
     this._setDatepickerFrom();
-  }
-
-  setDestinations(destinations) {
-    this._destinations = destinations;
   }
 
   reset(trip) {
@@ -374,8 +368,8 @@ export default class TripEditForm extends SmartClass {
   _typeChangeHandler(evt) {
     evt.preventDefault();
 
-    const offersOfChoosenType = getElemntOfCurrentType(this._tripOffers, evt.currentTarget.value);
-    const currentOffers = offersOfChoosenType.map((offer) => offer.offers);
+    const offersOfChosenType = getElementOfCurrentType(this._tripOffers, evt.currentTarget.value);
+    const currentOffers = offersOfChosenType.map((offer) => offer.offers);
     const mergedOffers = flatten(currentOffers);
 
     this.updateData({
@@ -388,15 +382,15 @@ export default class TripEditForm extends SmartClass {
 
   _destinationChangeHandler(evt) {
     this._destinationField.value = evt.currentTarget.value;
-    const corretionCheck = this._options.filter((option) => option.value === evt.currentTarget.value);
+    const correctionCheck = this._options.filter((option) => option.value === evt.currentTarget.value);
 
-    const destinationOfCurrentName = getElemntOfCurrentName(this._destinations, this._destinationField.value);
+    const destinationOfCurrentName = getElementOfCurrentName(this._destinations, this._destinationField.value);
     const currentOffers = destinationOfCurrentName.map((it) => it.pictures);
     const currentDescriptions = destinationOfCurrentName.map((it) => it.description);
     const currentDescription = currentDescriptions[0];
     const mergedPhotos = flatten(currentOffers);
 
-    if (corretionCheck.length > 0) {
+    if (correctionCheck.length > 0) {
       this.updateData({
         isEdit: true,
         destination: Object.assign(

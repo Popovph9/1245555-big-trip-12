@@ -4,7 +4,7 @@ import {sortTripsByDate} from "../utils/sorting.js";
 
 const RENDERED_DESTINATIONS = 3;
 
-const getCreateDestinationTempalte = (arr) => {
+const getCreateDestinationTemplate = (arr) => {
   arr.sort(sortTripsByDate);
   if (arr.length <= RENDERED_DESTINATIONS) {
     return arr.map((it) => `${it.destination.name}`).join(` — `);
@@ -33,14 +33,14 @@ const getPrice = (arr) => {
 
 const getRouteTemplate = (trips) => {
   if (trips.length > 0) {
-    const destinationTempalte = getCreateDestinationTempalte(trips);
+    const destinationTemplate = getCreateDestinationTemplate(trips);
     const tripDurationTemplate = getCreateTripDurationTemplate(trips);
     const price = getPrice(trips);
 
     return (
       `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
-          <h1 class="trip-info__title">${destinationTempalte}</h1>
+          <h1 class="trip-info__title">${destinationTemplate}</h1>
 
 
           <p class="trip-info__dates">${tripDurationTemplate}</p>

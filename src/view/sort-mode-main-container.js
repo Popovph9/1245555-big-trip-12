@@ -1,19 +1,19 @@
 import AbstractClass from "./abstract-class.js";
 
-const getMainContainerTemplate = () => {
+const getSortModeMainContainerTemplate = () => {
   return (
     `<ul class="trip-days">
     </ul>`
   );
 };
 
-export default class MainContainer extends AbstractClass {
+export default class SortModeMainContainer extends AbstractClass {
   constructor(trips) {
     super();
     this._trips = trips;
   }
 
   getTemplate() {
-    return getMainContainerTemplate(this._trips);
+    return getSortModeMainContainerTemplate(this._trips);
   }
 }
