@@ -50,14 +50,14 @@ const getTripTemplate = (trip) => {
   const duration = getDuration(dateFrom, dateTo);
   const durationTemplate = getDurationTemplate(duration);
 
-  const getSubb = () => {
-    let subb = Preposition.TO;
+  const getPreposition = () => {
+    let preposition = Preposition.TO;
 
     if (type === Activity.CHECK || type === Activity.SIGHT || type === Activity.REST) {
-      subb = Preposition.IN;
+      preposition = Preposition.IN;
     }
 
-    return subb;
+    return preposition;
   };
 
   return (
@@ -66,7 +66,7 @@ const getTripTemplate = (trip) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${getUpperLetter(type)} ${getSubb()} ${destination.name}</h3>
+        <h3 class="event__title">${getUpperLetter(type)} ${getPreposition()} ${destination.name}</h3>
 
         <div class="event__schedule">
           <p class="event__time">

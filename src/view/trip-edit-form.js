@@ -149,14 +149,14 @@ const getCreateDescriptionTemplate = (it, name, destinations, isEdit) => {
 
 const getEditTripTemplate = (tripOffers, destinations, trips) => {
   const {type, destination, offers, dateFrom, dateTo, basePrice, isFavorite, isPhoto, isNew, isEdit, isDisabled, isSaving, isDeleting} = trips;
-  const getSubb = () => {
-    let subb = Preposition.TO;
+  const getPreposition = () => {
+    let preposition = Preposition.TO;
 
     if (type === Activity.CHECK || type === Activity.SIGHT || type === Activity.REST) {
-      subb = Preposition.IN;
+      preposition = Preposition.IN;
     }
 
-    return subb;
+    return preposition;
   };
 
   const actualTypes = getTypes(tripOffers);
@@ -207,7 +207,7 @@ const getEditTripTemplate = (tripOffers, destinations, trips) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${getUpperLetter(type)} ${getSubb()}
+            ${getUpperLetter(type)} ${getPreposition()}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" autocomplete="off" value="${he.encode(destination.name)}" list="destination-list-1"  ${isDisabled ? `disabled` : ``} required>
             <datalist id="destination-list-1">
